@@ -45,15 +45,18 @@ ENCRE = (30, 22, 17)             # texte sur fond clair (satin, flat lay)
 
 # Les 8 plans du script (tiktok/01-golden-hour.md).
 # style : "titre" (serif, centré), "phrase" (sans-serif, centré), "etiquette" (petites capitales, à gauche)
+# cadrage : "plein" (plein écran, centré sur focus=(x, y) entre 0 et 1, agrandi de echelle) ou "carte"
+# (photo entière posée sur un fond écrin). Sans cadrage : plein écran pour une photo verticale, carte sinon.
 PLANS = [
-    dict(debut=0,  fin=2,  texte="On dirait de l'or fin… non\u00a0?",               style="titre",     zoom=(1.04, 1.12)),
+    dict(debut=0,  fin=2,  texte="On dirait de l'or fin… non\u00a0?",               style="titre",     zoom=(1.04, 1.12),
+         cadrage="plein", focus=(0.47, 0.45)),
     dict(debut=2,  fin=4,  texte="Acier inoxydable doré",                           style="titre",     zoom=(1.00, 1.05)),
     dict(debut=4,  fin=7,  texte="Hypoallergénique · Sans\u00a0nickel · Ne\u00a0s'oxyde\u00a0pas", style="phrase", zoom=(1.06, 1.00)),
     dict(debut=7,  fin=10, texte="Boucles «\u00a0Ayana\u00a0»",                     style="etiquette", zoom=(1.00, 1.08)),
-    dict(debut=10, fin=13, texte="Collier «\u00a0Giulia\u00a0»",                    style="etiquette", zoom=(1.00, 1.12)),
+    dict(debut=10, fin=13, texte="Collier «\u00a0Giulia\u00a0»",                    style="etiquette", zoom=(1.00, 1.10)),
     dict(debut=13, fin=16, texte="Bracelet «\u00a0Lunéa\u00a0»",                    style="etiquette", zoom=(1.00, 1.06)),
-    dict(debut=16, fin=19, texte="Le look complet\u00a0: 48,50\u00a0€",             style="titre",     zoom=(1.08, 1.00)),
-    dict(debut=19, fin=23, texte="Compose ton look doré",                           style="titre",     zoom=(1.00, 1.03),
+    dict(debut=16, fin=19, texte="Le look complet\u00a0: 48,50\u00a0€",             style="titre",     zoom=(1.06, 1.00)),
+    dict(debut=19, fin=23, texte="Compose ton look doré",                           style="titre",     zoom=(1.00, 1.04),
          cta="yline.fr · lien en bio"),
 ]
 
@@ -111,13 +114,33 @@ def get_photos(dossier):
     return sorted(set(files))
 
 
-def recadrer(img, largeur, hauteur):
-    """Remplit largeur x hauteur en recadrant au centre (sans déformer)."""
-    ratio = max(largeur / img.width, hauteur / img.height)
+def recadrer(img, largeur, hauteur, focus=(0.5, 0.5), echelle=1.0):
+    """Remplit largeur x hauteur sans déformer, centré au plus près du point focus (x, y entre 0 et 1).
+    echelle > 1 agrandit la photo pour recadrer plus serré."""
+    ratio = max(largeur / img.width, hauteur / img.height) * echelle
     img = img.resize((round(img.width * ratio), round(img.height * ratio)), Image.LANCZOS)
-    x = (img.width - largeur) // 2
-    y = (img.height - hauteur) // 2
+    x = min(max(int(img.width * focus[0] - largeur / 2), 0), img.width - largeur)
+    y = min(max(int(img.height * focus[1] - hauteur / 2), 0), img.height - hauteur)
     return img.crop((x, y, x + largeur, y + hauteur))
+
+
+def fond_ecrin():
+    """Fond sombre et chaud, comme l'intérieur d'un écrin, avec un léger grain contre les bandes."""
+    yy, xx = np.mgrid[0:HEIGHT, 0:WIDTH].astype(np.float32)
+    d = np.clip(np.sqrt(((xx - WIDTH * 0.5) / WIDTH) ** 2 + ((yy - HEIGHT * 0.42) / (HEIGHT * 0.75)) ** 2) * 1.6, 0, 1)
+    centre, bord = np.array([62, 43, 29], np.float32), np.array([13, 9, 7], np.float32)
+    arr = centre * (1 - d[..., None]) + bord * d[..., None]
+    arr += np.random.default_rng(7).normal(0, 2.2, arr.shape)
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
+
+
+def assombrir_haut(img):
+    """Voile sombre en dégradé sur le haut du cadre : le texte reste lisible sur une photo plein écran."""
+    arr = np.asarray(img).astype(np.float32)
+    h = int(HEIGHT * 0.45)
+    voile = np.linspace(0.5, 0, h, dtype=np.float32)
+    arr[:h] *= (1 - voile)[:, None, None]
+    return Image.fromarray(arr.astype(np.uint8))
 
 
 def etalonner(img):
@@ -131,30 +154,31 @@ def etalonner(img):
     return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
 
 
-def preparer_photo(path):
+def preparer_photo(path, cadrage=None, focus=(0.5, 0.5), echelle=1.0):
     """
-    Photo verticale (ta vidéo/ton tournage) : plein cadre.
-    Photo carrée ou horizontale (photo produit) : posée au centre sur un fond flou
-    de la même photo, pour ne pas couper le bijou.
+    "plein" : la photo remplit l'écran (idéal pour une photo portée ou verticale).
+    "carte" : la photo entière est posée au centre sur un fond écrin, pour ne pas couper le bijou
+    (idéal pour une photo produit carrée).
     """
     img = ImageOps.exif_transpose(Image.open(path)).convert("RGB")   # remet droites les photos de téléphone
-    if img.height / img.width >= 1.4:
-        return etalonner(recadrer(img, WIDTH, HEIGHT))
+    if cadrage is None:
+        cadrage = "plein" if img.height / img.width >= 1.4 else "carte"
+    if cadrage == "plein":
+        return etalonner(assombrir_haut(recadrer(img, WIDTH, HEIGHT, focus, echelle)))
 
-    fond = recadrer(img, WIDTH, HEIGHT).filter(ImageFilter.GaussianBlur(45))
-    fond = Image.fromarray((np.asarray(fond).astype(np.float32) * 0.45).astype(np.uint8))
-    largeur = int(WIDTH * 0.9)
+    fond = fond_ecrin()
+    largeur = int(WIDTH * 0.78)
     photo = img.resize((largeur, round(img.height * largeur / img.width)), Image.LANCZOS)
-    hauteur = min(photo.height, int(HEIGHT * 0.6))
+    hauteur = min(photo.height, int(HEIGHT * 0.5))
     haut = (photo.height - hauteur) // 2
     photo = photo.crop((0, haut, largeur, haut + hauteur))
     masque = Image.new("L", photo.size, 0)
     ImageDraw.Draw(masque).rounded_rectangle((0, 0, *photo.size), radius=28, fill=255)
     ombre = Image.new("L", (WIDTH, HEIGHT), 0)
     x = (WIDTH - photo.width) // 2
-    y = int(HEIGHT * 0.47) - photo.height // 2       # un peu au-dessus du centre : le bas est caché par TikTok
-    ImageDraw.Draw(ombre).rounded_rectangle((x, y + 18, x + photo.width, y + photo.height + 18), radius=28, fill=150)
-    fond.paste(Image.new("RGB", (WIDTH, HEIGHT), (0, 0, 0)), (0, 0), ombre.filter(ImageFilter.GaussianBlur(30)))
+    y = int(HEIGHT * 0.53) - photo.height // 2       # sous les textes, au-dessus de la zone cachée par TikTok
+    ImageDraw.Draw(ombre).rounded_rectangle((x, y + 24, x + photo.width, y + photo.height + 24), radius=28, fill=170)
+    fond.paste(Image.new("RGB", (WIDTH, HEIGHT), (0, 0, 0)), (0, 0), ombre.filter(ImageFilter.GaussianBlur(36)))
     fond.paste(photo, (x, y), masque)
     return etalonner(fond)
 
@@ -205,7 +229,7 @@ def calque_texte(plan, clair=False):
 
     if plan.get("cta"):
         police = trouver_police(POLICES_TEXTE, 46, axes=[500])
-        blocs.append(([plan["cta"].upper()], police, ENCRE if clair else OR, 6, "centre", int(HEIGHT * 0.30)))
+        blocs.append(([plan["cta"].upper()], police, ENCRE if clair else OR, 6, "centre", int(HEIGHT * 0.265)))
 
     texte = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
     dt = ImageDraw.Draw(texte)
@@ -230,7 +254,7 @@ def make_plan_clip(plan, photo_path, index):
     if index < len(PLANS) - 1:
         duree += FONDU                               # chevauche le plan suivant pour le fondu
     z0, z1 = plan["zoom"]
-    image = preparer_photo(photo_path)
+    image = preparer_photo(photo_path, plan.get("cadrage"), plan.get("focus", (0.5, 0.5)), plan.get("echelle", 1.0))
     clip = (
         ImageClip(np.asarray(image))
         .with_duration(duree)

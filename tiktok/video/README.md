@@ -11,25 +11,30 @@ cd tiktok/video
 pip install -r requirements.txt
 ```
 
-## 2. Mettre les photos
+## 2. Les photos
 
-Dépose 8 photos dans `photos/`, nommées dans l'ordre des plans :
+Les photos de la vidéo actuelle sont déjà dans `photos/`. Ce sont les photos produits du site yline.fr :
 
-| Fichier | Plan | Ce qu'on doit voir |
+| Fichier | Plan | Photo |
 |---|---|---|
-| `01-....jpg` | Hook | Bague Angelica en très gros plan, dans la lumière |
-| `02-....jpg` | Superposition | Bagues Angelica et Bedra sur le doigt |
-| `03-....jpg` | Matière | Main baguée sur du satin |
-| `04-....jpg` | Boucles | Boucle Ayana portée, de profil |
-| `05-....jpg` | Collier | Collier Giulia sur la clavicule |
-| `06-....jpg` | Bracelet | Bracelet Lunéa au poignet |
-| `07-....jpg` | Look complet | Le look entier, face caméra ou dans un miroir |
-| `08-....jpg` | CTA | Les 5 pièces posées à plat avec le packaging |
+| `01-angelica-portee.jpg` | Hook | Bague Angelica portée |
+| `02-bedra-lumiere.webp` | Acier inoxydable doré | Bague Bedra posée, lumière rasante |
+| `03-bedra-portee.webp` | Hypoallergénique | Bague Bedra portée |
+| `04-ayana-portees.webp` | Boucles | Boucle Ayana portée, de profil |
+| `05-giulia-porte.jpg` | Collier | Collier Giulia porté |
+| `06-lunea.jpg` | Bracelet | Bracelet Lunéa sur fond doré |
+| `07-look-complet.png` | Look complet | Vitrine des 5 pièces avec nom et prix, créée par `composer_look.py` |
+| `08-ayana-lumiere.webp` | CTA | Boucles Ayana dans la lumière |
 
-- **Photos verticales** (prises au téléphone) : affichées en plein écran. C'est le meilleur rendu.
-- **Photos carrées** (photos produits du site) : posées au centre sur un fond flou de la même photo, pour ne pas couper le bijou.
-- **Moins de 8 photos** : elles sont réutilisées dans l'ordre.
-- **Haut du cadre** : garde-le dégagé, c'est là que s'affichent les textes.
+Pour changer une photo, remplace le fichier en gardant le numéro au début du nom : les photos sont prises dans l'ordre alphabétique. S'il y en a moins de 8, elles sont réutilisées dans l'ordre.
+
+La vitrine du plan 7 se refait avec `python composer_look.py`, à partir des photos produits de `photos/look/`. Les noms et les prix sont dans la liste `PIECES` en haut du fichier : pense à les mettre à jour si un prix change.
+
+Deux cadrages possibles, réglables pour chaque plan dans la liste `PLANS` de `generer_video.py` :
+- **`"plein"`** : la photo remplit l'écran. Idéal pour une photo portée en haute définition ou une photo verticale prise au téléphone. `focus=(x, y)` choisit le point à garder au centre (0 à 1). `echelle` permet de recadrer plus serré.
+- **`"carte"`** : la photo entière est posée au centre sur un fond sombre façon écrin. Idéal pour une photo produit carrée. C'est le cadrage par défaut des photos qui ne sont pas verticales.
+
+Garde le haut du cadre dégagé : c'est là que s'affichent les textes.
 
 ## 3. Lancer
 
@@ -53,7 +58,7 @@ Pour TikTok, il est souvent plus simple de ne pas mettre de musique ici et de l'
 
 - **Timing :** suit le script à la seconde (0–2 s, 2–4 s, 4–7 s…), avec un fondu enchaîné de 0,3 s entre les plans.
 - **Mouvement :** chaque photo a un léger zoom avant ou arrière, pour qu'aucun plan ne reste figé.
-- **Étalonnage :** chaud et léger, avec un petit vignettage.
+- **Étalonnage :** chaud et léger, avec un petit vignettage. En plein écran, un léger voile sombre en haut garde les textes lisibles.
 - **Textes :** toujours dans le tiers supérieur, jamais dans le bas de l'écran que l'interface TikTok cache. Ils sont ivoire sur fond sombre et passent automatiquement en noir chaud sur fond clair (satin).
 - **Polices :** Bodoni Moda pour les titres, Jost pour le reste. Elles sont fournies dans `fonts/` sous licence libre OFL. Pour en changer, ajoute `fonts/titre.ttf` et/ou `fonts/texte.ttf`.
 - **Voix off :** `../audio/voix-off-calee-23s.mp3`, la prise 1 d'ElevenLabs découpée pour que chaque phrase tombe sur son plan.
