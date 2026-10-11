@@ -173,6 +173,7 @@ Règle générale : filme chaque plan **5–6 s, 3 fois**. On ne garde que 2–3
 ## Storyboard, animatique et montage automatique
 
 - **Vidéo finale avec les vrais bijoux** (23 s, 1080×1920, voix off incluse, prête à publier) : [`01-golden-hour-video.mp4`](01-golden-hour-video.mp4).
+- **Version dynamique** (15 s, hook B « Ce look a l'air de coûter 300 €… », coupes rapides, sans son pour ajouter un son tendance dans TikTok) : [`01-golden-hour-dynamique.mp4`](01-golden-hour-dynamique.mp4).
 - **Storyboard interactif** (animatique de 23 s, 8 plans illustrés, check-list de tournage) : [`01-golden-hour-storyboard.html`](01-golden-hour-storyboard.html), publié sur https://claude.ai/artifact/Fc9thnsA4iSYmmhgmbWeTW
 - **Animatique vidéo** avec la voix off calée : [`01-golden-hour-animatique.mp4`](01-golden-hour-animatique.mp4). Les images sont des illustrations ; elle sert à juger le rythme, pas le rendu final.
 - **Montage automatique à partir de tes photos** : [`video/`](video/README.md). Mets tes 8 photos dans `video/photos/` et lance `python generer_video.py`.

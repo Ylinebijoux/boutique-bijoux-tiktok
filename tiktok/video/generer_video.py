@@ -1,12 +1,12 @@
 """
-Génère la vidéo TikTok « Golden Hour » (Yline Bijoux) à partir de tes photos.
+Génère les vidéos TikTok Yline Bijoux à partir de tes photos.
 
     pip install -r requirements.txt
-    python generer_video.py
+    python generer_video.py                        # « Golden Hour » : 23 s, posée, avec voix off
+    python generer_video.py --version dynamique    # 15 s, rythmée, sans voix (ajoute un son TikTok)
 
-Les photos sont lues dans photos/ par ordre alphabétique : nomme-les
-01-....jpg à 08-....jpg pour qu'elles suivent les 8 plans du script.
-S'il y en a moins de 8, elles sont réutilisées dans l'ordre.
+Les photos sont lues dans photos/. Un plan peut nommer sa photo (clé "photo") ;
+sinon les photos sont prises par ordre alphabétique (01-..., 02-...).
 """
 import argparse
 import glob
@@ -16,6 +16,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 from moviepy import (
     AudioFileClip,
+    ColorClip,
     CompositeAudioClip,
     CompositeVideoClip,
     ImageClip,
@@ -28,8 +29,6 @@ from moviepy import (
 # --------------------------------------
 WIDTH, HEIGHT = 1080, 1920
 FPS = 30
-DUREE = 23
-FONDU = 0.3                      # fondu enchaîné entre deux plans (s)
 ZONE_TEXTE_HAUT = int(HEIGHT * 0.15)
 MARGE = int(WIDTH * 0.09)
 
@@ -59,6 +58,29 @@ PLANS = [
     dict(debut=19, fin=23, texte="Compose ton look doré",                           style="titre",     zoom=(1.00, 1.04),
          cta="yline.fr · lien en bio"),
 ]
+
+# Version dynamique (15 s) : hook « prix » qui ouvre une question, coupes rapides sur le rythme,
+# éclat de lumière à chaque coupe, réponse à la fin. Pas de voix : ajoute un son tendance dans TikTok.
+PLANS_DYNAMIQUE = [
+    dict(debut=0.0,  fin=1.8,  photo="01-angelica-portee.jpg", texte="Ce look a l'air de coûter 300\u00a0€…", style="titre",
+         zoom=(1.00, 1.16), cadrage="plein", focus=(0.47, 0.45)),
+    dict(debut=1.8,  fin=3.4,  photo="03-bedra-portee.webp",   texte="Bague Bedra",    style="etiquette", zoom=(1.12, 1.00)),
+    dict(debut=3.4,  fin=5.0,  photo="04-ayana-portees.webp",  texte="Boucles Ayana",  style="etiquette", zoom=(1.00, 1.12)),
+    dict(debut=5.0,  fin=6.6,  photo="05-giulia-porte.jpg",    texte="Collier Giulia", style="etiquette", zoom=(1.12, 1.00)),
+    dict(debut=6.6,  fin=8.2,  photo="06-lunea.jpg",           texte="Bracelet Lunéa", style="etiquette", zoom=(1.00, 1.12)),
+    dict(debut=8.2,  fin=9.8,  photo="02-bedra-lumiere.webp",  texte="Acier inoxydable doré", style="titre", zoom=(1.12, 1.00)),
+    dict(debut=9.8,  fin=12.6, photo="07-look-complet.png",
+         texte="En vrai\u00a0? 48,50\u00a0€ le\u00a0look\u00a0complet", style="titre", zoom=(1.08, 1.00)),
+    dict(debut=12.6, fin=15.0, photo="08-ayana-lumiere.webp",  texte="Compose ton look doré", style="titre", zoom=(1.00, 1.06),
+         cta="yline.fr · lien en bio"),
+]
+
+VERSIONS = {
+    "golden-hour": dict(plans=PLANS, fondu=0.3, fondu_texte=0.35, eclat=False,
+                        voix=VOIX_OFF, sortie="golden-hour.mp4"),
+    "dynamique":   dict(plans=PLANS_DYNAMIQUE, fondu=0.0, fondu_texte=0.2, eclat=True,
+                        voix=None, sortie="golden-hour-dynamique.mp4"),
+}
 
 # Polices : Bodoni Moda et Jost sont fournies dans fonts/ (licence libre OFL).
 # Pour en changer, dépose fonts/titre.ttf et/ou fonts/texte.ttf. Sinon, une police système proche est utilisée.
@@ -249,10 +271,21 @@ def calque_texte(plan, clair=False):
     return np.asarray(calque)
 
 
-def make_plan_clip(plan, photo_path, index):
+def make_eclat(t):
+    """Éclat de lumière dorée très court sur une coupe (plus doux qu'un flash blanc)."""
+    return (
+        ColorClip((WIDTH, HEIGHT), color=(255, 236, 200))
+        .with_duration(0.2)
+        .with_start(max(0, t - 0.07))
+        .with_opacity(0.6)
+        .with_effects([vfx.CrossFadeIn(0.07), vfx.CrossFadeOut(0.13)])
+    )
+
+
+def make_plan_clip(plan, photo_path, index, nb_plans, fondu, fondu_texte):
     duree = plan["fin"] - plan["debut"]
-    if index < len(PLANS) - 1:
-        duree += FONDU                               # chevauche le plan suivant pour le fondu
+    if fondu and index < nb_plans - 1:
+        duree += fondu                               # chevauche le plan suivant pour le fondu
     z0, z1 = plan["zoom"]
     image = preparer_photo(photo_path, plan.get("cadrage"), plan.get("focus", (0.5, 0.5)), plan.get("echelle", 1.0))
     clip = (
@@ -262,14 +295,14 @@ def make_plan_clip(plan, photo_path, index):
         .with_position(("center", "center"))
         .with_start(plan["debut"])
     )
-    if index > 0:
-        clip = clip.with_effects([vfx.CrossFadeIn(FONDU)])
+    if fondu and index > 0:
+        clip = clip.with_effects([vfx.CrossFadeIn(fondu)])
 
     texte = (
         ImageClip(calque_texte(plan, clair=fond_clair(image)))
         .with_duration(plan["fin"] - plan["debut"])
         .with_start(plan["debut"])
-        .with_effects([vfx.CrossFadeIn(0.35)])
+        .with_effects([vfx.CrossFadeIn(fondu_texte)])
     )
     return clip, texte
 
@@ -278,12 +311,20 @@ def make_plan_clip(plan, photo_path, index):
 # Main
 # --------------------------------------
 def main():
-    parser = argparse.ArgumentParser(description="Vidéo TikTok « Golden Hour » - Yline Bijoux")
+    parser = argparse.ArgumentParser(description="Vidéos TikTok Yline Bijoux")
+    parser.add_argument("--version", choices=sorted(VERSIONS), default="golden-hour",
+                        help="golden-hour (23 s, voix off) ou dynamique (15 s, rythmée)")
     parser.add_argument("--photos", default=PHOTO_FOLDER, help="dossier des photos (défaut : photos/)")
-    parser.add_argument("--voix", default=VOIX_OFF, help="voix off calée sur 23 s (défaut : ../audio/voix-off-calee-23s.mp3)")
-    parser.add_argument("--musique", help="musique de fond, mise à ~22 %% sous la voix")
-    parser.add_argument("--sortie", default=os.path.join(OUTPUT_FOLDER, "golden-hour.mp4"))
+    parser.add_argument("--voix", help="voix off (défaut : celle de la version, aucune pour dynamique)")
+    parser.add_argument("--musique", help="musique de fond (à ~22 %% sous la voix s'il y en a une)")
+    parser.add_argument("--sortie", help="fichier de sortie (défaut : output/<version>.mp4)")
     args = parser.parse_args()
+
+    version = VERSIONS[args.version]
+    plans = version["plans"]
+    duree_totale = plans[-1]["fin"]
+    voix_off = args.voix or version["voix"]
+    sortie = args.sortie or os.path.join(OUTPUT_FOLDER, version["sortie"])
 
     photos = get_photos(args.photos)
     if not photos:
@@ -291,35 +332,38 @@ def main():
             f"Aucune photo trouvée dans {args.photos}. "
             "Ajoute tes photos de bijoux (01-bague.jpg, 02-...) dans ce dossier."
         )
-    print(f"{len(photos)} photo(s) pour {len(PLANS)} plans")
+    print(f"Version {args.version} : {duree_totale:g} s, {len(plans)} plans, {len(photos)} photo(s)")
 
-    couches = []
-    textes = []
-    for i, plan in enumerate(PLANS):
-        photo = photos[i % len(photos)]
-        print(f"  plan {i + 1} ({plan['debut']}-{plan['fin']} s) : {os.path.basename(photo)}")
-        clip, texte = make_plan_clip(plan, photo, i)
+    couches, textes, eclats = [], [], []
+    for i, plan in enumerate(plans):
+        photo = os.path.join(args.photos, plan["photo"]) if plan.get("photo") else photos[i % len(photos)]
+        print(f"  plan {i + 1} ({plan['debut']:g}-{plan['fin']:g} s) : {os.path.relpath(photo, args.photos)}")
+        clip, texte = make_plan_clip(plan, photo, i, len(plans), version["fondu"], version["fondu_texte"])
         couches.append(clip)
         textes.append(texte)
+        if version["eclat"] and i > 0:
+            eclats.append(make_eclat(plan["debut"]))
 
-    video = CompositeVideoClip(couches + textes, size=(WIDTH, HEIGHT), bg_color=(10, 8, 6)).with_duration(DUREE)
+    video = CompositeVideoClip(couches + eclats + textes, size=(WIDTH, HEIGHT),
+                               bg_color=(10, 8, 6)).with_duration(duree_totale)
 
     pistes = []
-    if args.voix and os.path.exists(args.voix):
-        voix = AudioFileClip(args.voix)
-        pistes.append(voix.subclipped(0, min(DUREE, voix.duration)))
-    else:
-        print("Pas de voix off trouvée : vidéo exportée sans voix.")
+    if voix_off and os.path.exists(voix_off):
+        voix = AudioFileClip(voix_off)
+        pistes.append(voix.subclipped(0, min(duree_totale, voix.duration)))
+    elif voix_off:
+        print(f"Voix off introuvable ({voix_off}) : vidéo exportée sans voix.")
     if args.musique:
         musique = AudioFileClip(args.musique)
-        musique = musique.subclipped(0, min(DUREE, musique.duration))
-        pistes.append(musique.with_volume_scaled(0.22).with_effects([afx.AudioFadeOut(1.5)]))
+        musique = musique.subclipped(0, min(duree_totale, musique.duration))
+        volume = 0.22 if pistes else 1.0
+        pistes.append(musique.with_volume_scaled(volume).with_effects([afx.AudioFadeOut(1.5)]))
     if pistes:
-        video = video.with_audio(CompositeAudioClip(pistes).with_duration(DUREE))
+        video = video.with_audio(CompositeAudioClip(pistes).with_duration(duree_totale))
 
-    os.makedirs(os.path.dirname(os.path.abspath(args.sortie)), exist_ok=True)
+    os.makedirs(os.path.dirname(os.path.abspath(sortie)), exist_ok=True)
     video.write_videofile(
-        args.sortie,
+        sortie,
         fps=FPS,
         codec="libx264",
         audio_codec="aac",
@@ -328,7 +372,7 @@ def main():
         threads=4,
         audio=bool(pistes),
     )
-    print(f"Vidéo créée : {args.sortie}")
+    print(f"Vidéo créée : {sortie}")
 
 
 if __name__ == "__main__":

@@ -44,6 +44,15 @@ python generer_video.py
 
 La vidéo sort dans `output/golden-hour.mp4` (1080×1920, 30 i/s, avec la voix off).
 
+Il existe deux versions :
+
+| Commande | Vidéo | Durée | Son |
+|---|---|---|---|
+| `python generer_video.py` | **Golden Hour** : posée, élégante, avec la voix off calée | 23 s | voix off |
+| `python generer_video.py --version dynamique` | **Dynamique** : hook « Ce look a l'air de coûter 300 €… », coupes rapides avec un éclat doré, réponse « 48,50 € » à la fin | 15 s | aucun : ajoute un son tendance dans TikTok |
+
+La version dynamique sort dans `output/golden-hour-dynamique.mp4`. Ses plans sont dans la liste `PLANS_DYNAMIQUE`. Chaque plan y désigne sa photo avec la clé `photo`.
+
 Options :
 
 ```bash
