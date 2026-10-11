@@ -1,0 +1,602 @@
+<title>Storyboard Golden Hour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=DM+Mono:wght@400;500&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: a velvet jewellery-case page. Phone-sized animatic first, then the 8 shots as a film strip of cards. */
+:root {
+  --velvet: #15100D;
+  --velvet-2: #1D1612;
+  --line: #3A2E25;
+  --ivory: #F3EADB;
+  --muted: #B5A591;
+  --gold: #D4AF6A;
+  --gold-deep: #8E6E36;
+  --ink: #1E1611;
+  --alert: #E8806F;
+  --f-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-body: "Jost", "Futura", "Avenir Next", system-ui, sans-serif;
+  --f-mono: "DM Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--velvet); color: var(--ivory); font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; }
+@media (max-width: 480px) { .wrap { padding-inline: 16px; padding-block: 28px 48px; } }
+
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: 0; }
+h1 { font-family: var(--f-display); font-style: italic; font-weight: 500; font-size: clamp(52px, 10vw, 112px); line-height: .95; letter-spacing: -.01em; margin: .12em 0 .18em; text-wrap: balance; }
+.lede { max-width: 60ch; color: var(--muted); font-size: 17px; margin: 0; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 20px 0 0; padding: 0; list-style: none; font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.facts b { color: var(--ivory); font-weight: 500; }
+
+h2 { font-family: var(--f-display); font-weight: 500; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; }
+section { margin-top: 72px; }
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px 24px; margin-bottom: 24px; }
+.section-head p { margin: 0; color: var(--muted); font-size: 15px; max-width: 52ch; }
+
+/* Hero: animatic + pieces */
+.hero { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 56px; margin-top: 44px; align-items: start; }
+@media (max-width: 800px) { .hero { grid-template-columns: minmax(0, 1fr); gap: 44px; } .player { max-width: 340px; width: 100%; margin-inline: auto; } }
+
+.phone { border: 1px solid var(--gold-deep); border-radius: 26px; padding: 7px; background: #0A0705; box-shadow: 0 30px 60px -30px rgba(0,0,0,.8); }
+.phone .frame { border-radius: 20px; }
+.controls { display: flex; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+.play { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--gold); background: var(--gold); color: var(--ink); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.play:hover { background: #E3C27F; }
+.play svg { width: 16px; height: 16px; fill: currentColor; }
+.tc { font-family: var(--f-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.toggle { margin-left: auto; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); cursor: pointer; }
+input[type="checkbox"] { accent-color: var(--gold); }
+.timeline { position: relative; display: flex; gap: 3px; margin-top: 12px; }
+.seg { flex-basis: 0; min-width: 0; height: 28px; border-radius: 3px; background: var(--velvet-2); color: var(--muted); font-family: var(--f-mono); font-size: 11px; cursor: pointer; border: 1px solid var(--line); padding: 0; }
+.seg:hover { border-color: var(--gold-deep); color: var(--ivory); }
+.seg[aria-current="true"] { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.playhead { position: absolute; top: -4px; bottom: -4px; left: 0; width: 2px; margin-left: -1px; background: var(--ivory); border-radius: 1px; pointer-events: none; }
+button:focus-visible, .thumb:focus-visible, input:focus-visible { outline: 2px solid var(--ivory); outline-offset: 3px; }
+
+.info h2 { margin-bottom: 16px; }
+.pieces { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.pieces li { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.pieces .name { font-family: var(--f-display); font-size: 21px; line-height: 1.2; }
+.pieces .kind { font-size: 13px; color: var(--muted); grid-column: 1; }
+.pieces .price { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-family: var(--f-mono); font-size: 15px; font-variant-numeric: tabular-nums; }
+.pieces li.total { border-bottom: 0; }
+.pieces li.total .name { font-style: italic; }
+.pieces li.total .price { color: var(--gold); font-size: 20px; }
+
+.vo { margin-top: 36px; }
+.vo h3, .spec h3 { font-family: var(--f-mono); font-weight: 500; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: 0 0 12px; }
+.vo ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.vo li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.vo .t { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.vo .l { font-family: var(--f-display); font-style: italic; font-size: 19px; line-height: 1.35; }
+.vo .how { margin: 14px 0 0; font-size: 14px; color: var(--muted); max-width: 56ch; }
+
+/* Shots */
+.shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 470px), 1fr)); gap: 20px; }
+.shot { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 18px; padding: 16px; background: var(--velvet-2); border: 1px solid var(--line); border-radius: 14px; }
+@media (max-width: 420px) { .shot { grid-template-columns: 100px minmax(0, 1fr); gap: 14px; padding: 12px; } }
+.thumb { padding: 0; margin: 0; border: 0; cursor: pointer; align-self: start; font: inherit; color: inherit; }
+.shot-meta { font-family: var(--f-mono); font-size: 12px; color: var(--gold); margin: 0; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.shot h3 { font-family: var(--f-display); font-weight: 500; font-size: 24px; line-height: 1.15; margin: 2px 0 6px; }
+.action { margin: 0 0 12px; font-size: 15px; }
+.shot dl { margin: 0; display: grid; gap: 8px; }
+.shot dl div { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 10px; }
+.shot dt { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.shot dd { margin: 0; font-size: 14px; }
+.shot dd.onscreen { font-family: var(--f-display); font-style: italic; font-size: 16px; line-height: 1.3; }
+@media (max-width: 520px) { .shot dl div { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+
+/* Frames (the 9:16 pictures) */
+.frame { position: relative; display: block; aspect-ratio: 9 / 16; width: 100%; max-width: 100%; overflow: hidden; border-radius: 10px; background: #110C09; container-type: inline-size; isolation: isolate; }
+.frame .art-wrap { position: absolute; inset: 0; display: block; }
+.frame svg.art { width: 100%; height: 100%; display: block; }
+.frame .ov { position: absolute; left: 9%; right: 9%; display: block; text-align: center; font-family: var(--f-display); font-weight: 500; color: var(--ivory); text-shadow: 0 1px 8px rgba(0,0,0,.55); line-height: 1.12; font-size: 7.6cqw; text-wrap: balance; }
+.frame .ov.top { top: 15%; }
+.frame .ov.small { font-family: var(--f-body); font-size: 5.4cqw; letter-spacing: .02em; line-height: 1.35; }
+.frame .ov.cta { top: 30%; font-family: var(--f-body); font-size: 4.8cqw; letter-spacing: .12em; text-transform: uppercase; }
+.frame .lbl { position: absolute; left: 9%; top: 15%; display: block; font-family: var(--f-body); font-weight: 500; font-size: 4.6cqw; letter-spacing: .16em; text-transform: uppercase; color: var(--ivory); text-shadow: 0 1px 6px rgba(0,0,0,.55); }
+.frame.light .ov, .frame.light .lbl { color: var(--ink); text-shadow: 0 1px 6px rgba(255,248,236,.6); }
+.frame .sub { position: absolute; left: 50%; top: 64%; transform: translateX(-50%); display: block; max-width: 84%; width: max-content; text-align: center; font-family: var(--f-body); font-size: 4.6cqw; line-height: 1.3; color: #fff; background: rgba(12,9,7,.55); padding: .35em .6em; border-radius: .4em; }
+.frame .safe { position: absolute; inset: 0; display: none; pointer-events: none; }
+.show-safe .frame .safe { display: block; }
+.frame .safe::before, .frame .safe::after { content: ""; position: absolute; background: repeating-linear-gradient(135deg, rgba(232,128,111,.4) 0 3px, transparent 3px 8px); }
+.frame .safe::before { left: 0; right: 0; bottom: 0; height: 20%; border-top: 1px dashed var(--alert); }
+.frame .safe::after { right: 0; top: 44%; bottom: 20%; width: 15%; border-left: 1px dashed var(--alert); }
+
+/* Animatic motion */
+.player .mv-spin { animation: mv-spin var(--dur) linear var(--delay) both; }
+.player .mv-rise { animation: mv-rise var(--dur) ease-out var(--delay) both; }
+.player .mv-pan { animation: mv-pan var(--dur) linear var(--delay) both; }
+.player .mv-zoom { animation: mv-zoom var(--dur) ease-out var(--delay) both; }
+.player .mv-push { animation: mv-push var(--dur) linear var(--delay) both; }
+.player .mv-pull { animation: mv-pull var(--dur) ease-out var(--delay) both; }
+.player .mv-wipe { animation: mv-zoom var(--dur) linear var(--delay) both; }
+.player .spark { transform-box: fill-box; transform-origin: center; animation: spark 1.1s ease-in-out infinite alternate; }
+.player .wipe { transform-box: fill-box; animation: wipe var(--dur) ease-in var(--delay) both; }
+.player .ov, .player .lbl { animation: ov-in .5s ease-out var(--delay) both; }
+.player.paused .art-wrap, .player.paused .spark, .player.paused .wipe { animation-play-state: paused; }
+.player.paused .ov, .player.paused .lbl { animation: none; }
+@keyframes mv-spin { from { transform: scale(1.05) rotate(-1.6deg); } to { transform: scale(1.1) rotate(1.6deg); } }
+@keyframes mv-rise { from { transform: translateY(2.5%) scale(1.04); } to { transform: translateY(-2%) scale(1.04); } }
+@keyframes mv-pan { from { transform: translateX(-3%) scale(1.08); } to { transform: translateX(3%) scale(1.08); } }
+@keyframes mv-zoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+@keyframes mv-push { from { transform: scale(1); } to { transform: scale(1.18); } }
+@keyframes mv-pull { from { transform: scale(1.12); } to { transform: scale(1); } }
+@keyframes spark { from { opacity: .45; transform: scale(.7) rotate(0deg); } to { opacity: 1; transform: scale(1.15) rotate(20deg); } }
+@keyframes wipe { 0%, 62% { transform: translateX(0); } 100% { transform: translateX(-310%); } }
+@keyframes ov-in { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .player .art-wrap, .player .spark, .player .wipe, .player .ov, .player .lbl { animation: none !important; }
+}
+
+/* Hooks */
+.hooks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 235px), 1fr)); gap: 28px; }
+.hook { border-top: 1px solid var(--gold-deep); padding-top: 14px; display: grid; gap: 8px; align-content: start; }
+.hook .tag { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; color: var(--gold); margin: 0; }
+.hook .line { font-family: var(--f-display); font-style: italic; font-size: 22px; line-height: 1.25; margin: 0; }
+.hook .why { font-size: 14px; color: var(--muted); margin: 0; }
+
+/* Checklist */
+.check { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); column-gap: 32px; }
+.check label { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.check input { width: 18px; height: 18px; margin: 3px 0 0; flex: none; }
+.check input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--gold-deep); }
+.count { font-family: var(--f-mono); font-size: 13px; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+/* Specs */
+.specs { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 28px 32px; }
+.spec p { margin: 0; font-size: 15px; }
+.spec p + p { margin-top: 6px; color: var(--muted); font-size: 14px; }
+
+footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7E5D24"/><stop offset=".35" stop-color="#E7C987"/><stop offset=".5" stop-color="#FFF1C9"/><stop offset=".68" stop-color="#C69E52"/><stop offset="1" stop-color="#6E4F1D"/>
+    </linearGradient>
+    <radialGradient id="gBg" cx=".3" cy=".25" r=".9">
+      <stop offset="0" stop-color="#6A4826"/><stop offset=".55" stop-color="#2B1E15"/><stop offset="1" stop-color="#110C09"/>
+    </radialGradient>
+    <linearGradient id="gBeam" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFDEA0" stop-opacity="0"/><stop offset=".5" stop-color="#FFDEA0" stop-opacity=".34"/><stop offset="1" stop-color="#FFDEA0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="gSatin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F1E6D3"/><stop offset=".45" stop-color="#D9C6A6"/><stop offset=".7" stop-color="#F6EEE0"/><stop offset="1" stop-color="#CDB892"/>
+    </linearGradient>
+    <radialGradient id="gSatinDark" cx=".35" cy=".3" r=".9">
+      <stop offset="0" stop-color="#4A3526"/><stop offset="1" stop-color="#140E0A"/>
+    </radialGradient>
+    <linearGradient id="gSkin" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C98F68"/><stop offset=".45" stop-color="#E7BE9C"/><stop offset=".8" stop-color="#D6A27C"/><stop offset="1" stop-color="#B47A55"/>
+    </linearGradient>
+    <linearGradient id="gWindow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F3D7A6"/><stop offset=".35" stop-color="#A8743F"/><stop offset=".8" stop-color="#2A1C13"/><stop offset="1" stop-color="#140F0B"/>
+    </linearGradient>
+    <linearGradient id="gRoom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4A3322"/><stop offset="1" stop-color="#160F0B"/>
+    </linearGradient>
+    <linearGradient id="gMirror" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6A4A33"/><stop offset="1" stop-color="#241912"/>
+    </linearGradient>
+    <clipPath id="cArch" clipPathUnits="userSpaceOnUse"><path d="M16,152 L16,52 A29,29 0 0 1 74,52 L74,152Z"/></clipPath>
+    <filter id="fGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="1.1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="fSoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="fDrop" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy=".8" stdDeviation=".8" flood-color="#5A4128" flood-opacity=".35"/></filter>
+  </defs>
+</svg>
+
+<div class="wrap" id="page">
+  <header>
+    <p class="eyebrow">Yline Bijoux · TikTok #01 · Storyboard</p>
+    <h1>Golden Hour</h1>
+    <p class="lede">Une femme compose son look doré pièce par pièce, dans la lumière d'une fenêtre en fin de journée. Tout se tourne au téléphone. Lance l'animatique pour voir le rythme, puis suis les plans un par un le jour du tournage.</p>
+    <ul class="facts">
+      <li><b>23 s</b> · version courte 15 s</li>
+      <li><b>8 plans</b> · vertical 9:16</li>
+      <li><b>5 pièces</b> · look complet 48,50&nbsp;€</li>
+    </ul>
+  </header>
+
+  <div class="hero">
+    <div class="player paused" id="player">
+      <div class="phone"><div class="frame" id="pframe" role="img"></div></div>
+      <div class="controls">
+        <button class="play" id="play" type="button" aria-label="Lire l'animatique">
+          <svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9.5-5.5z"/></svg>
+          <svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M3.5 2.5h3.2v11H3.5zM9.3 2.5h3.2v11H9.3z"/></svg>
+        </button>
+        <span class="tc" id="tc">0:00 / 0:23</span>
+        <label class="toggle" for="safeToggle"><input type="checkbox" id="safeToggle"> Zones cachées par TikTok</label>
+      </div>
+      <div class="timeline" id="timeline"><span class="playhead" id="playhead"></span></div>
+    </div>
+
+    <div class="info">
+      <h2>Les 5 pièces</h2>
+      <ul class="pieces">
+        <li><span class="name">Angelica</span><span class="kind">Bague dorée, ajustable · plans 1 à 3</span><span class="price">9,90&nbsp;€</span></li>
+        <li><span class="name">Bedra</span><span class="kind">Bague, pour la superposition · plan 2</span><span class="price">8,90&nbsp;€</span></li>
+        <li><span class="name">Ayana</span><span class="kind">Boucles d'oreilles dorées · plan 4</span><span class="price">8,90&nbsp;€</span></li>
+        <li><span class="name">Giulia</span><span class="kind">Collier doré, ajustable · plan 5</span><span class="price">8,90&nbsp;€</span></li>
+        <li><span class="name">Lunéa</span><span class="kind">Bracelet ajustable · plan 6</span><span class="price">11,90&nbsp;€</span></li>
+        <li class="total"><span class="name">Le look complet</span><span class="kind">Argument final, plan 7</span><span class="price">48,50&nbsp;€</span></li>
+      </ul>
+
+      <div class="vo">
+        <h3>Voix off</h3>
+        <ol>
+          <li><span class="t">0:00</span><span class="l">On dirait de l'or fin… non&nbsp;?</span></li>
+          <li><span class="t">0:02</span><span class="l">Acier inoxydable doré.</span></li>
+          <li><span class="t">0:04</span><span class="l">Hypoallergénique… il ne s'oxyde pas.</span></li>
+          <li><span class="t">0:07</span><span class="l">Des boucles… un collier… un bracelet.</span></li>
+          <li><span class="t">0:16</span><span class="l">Le look complet&nbsp;? Moins de cinquante euros.</span></li>
+          <li><span class="t">0:19</span><span class="l">Yline Bijoux. Ton éclat, pièce par pièce.</span></li>
+        </ol>
+        <p class="how">Voix posée, proche du micro, avec le sourire. Une vraie pause après «&nbsp;non&nbsp;?&nbsp;» et après «&nbsp;Le look complet&nbsp;?&nbsp;».</p>
+      </div>
+    </div>
+  </div>
+
+  <section aria-labelledby="h-shots">
+    <div class="section-head">
+      <h2 id="h-shots">Plan par plan</h2>
+      <p>Filme chaque plan 5 à 6 secondes, trois fois, en 4K 60 i/s. Touche une vignette pour la voir dans l'animatique.</p>
+    </div>
+    <div class="shots" id="shots"></div>
+  </section>
+
+  <section aria-labelledby="h-hooks">
+    <div class="section-head">
+      <h2 id="h-hooks">Hooks à tester</h2>
+      <p>Même montage, seul le plan 1 change. Compare la rétention à 2 secondes dans les statistiques TikTok.</p>
+    </div>
+    <div class="hooks">
+      <div class="hook"><p class="tag">A · version tournée · curiosité</p><p class="line">On dirait de l'or fin… non&nbsp;?</p><p class="why">Pose l'idée «&nbsp;luxe&nbsp;» et invite à commenter.</p></div>
+      <div class="hook"><p class="tag">B · prix</p><p class="line">Ce look a l'air de coûter 300&nbsp;€…</p><p class="why">Plus direct. Révélation «&nbsp;48,50&nbsp;€&nbsp;» au plan 7.</p></div>
+      <div class="hook"><p class="tag">C · problème</p><p class="line">Tes bijoux virent au vert&nbsp;? 👀</p><p class="why">Répond à une vraie gêne&nbsp;: l'acier inoxydable ne s'oxyde pas.</p></div>
+      <div class="hook"><p class="tag">D · POV</p><p class="line">POV&nbsp;: tu as enfin trouvé tes bijoux du quotidien.</p><p class="why">Le plus doux, très lifestyle.</p></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-check">
+    <div class="section-head">
+      <h2 id="h-check">Avant de tourner</h2>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+    <ul class="check" id="check">
+      <li><label for="c1"><input type="checkbox" id="c1"><span>Fenêtre en fin de journée avec voilage blanc, ou lampe chaude (~3000&nbsp;K) sur le côté</span></label></li>
+      <li><label for="c2"><input type="checkbox" id="c2"><span>Satin ivoire ou champagne, lin beige, plateau en marbre ou écrin</span></label></li>
+      <li><label for="c3"><input type="checkbox" id="c3"><span>Haut uni noir ou blanc, col ou épaules dégagés</span></label></li>
+      <li><label for="c4"><input type="checkbox" id="c4"><span>Cheveux attachés bas, ongles nude ou French</span></label></li>
+      <li><label for="c5"><input type="checkbox" id="c5"><span>Bijoux essuyés à la microfibre juste avant</span></label></li>
+      <li><label for="c6"><input type="checkbox" id="c6"><span>Objectif nettoyé, 4K 60&nbsp;i/s, expo et mise au point verrouillées</span></label></li>
+      <li><label for="c7"><input type="checkbox" id="c7"><span>Petit miroir hors champ pour les éclats sur le métal</span></label></li>
+      <li><label for="c8"><input type="checkbox" id="c8"><span>Boîte ou pochette Yline pour le plan&nbsp;8</span></label></li>
+      <li><label for="c9"><input type="checkbox" id="c9"><span>Prix et stock revérifiés sur yline.fr</span></label></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="h-edit">
+    <div class="section-head"><h2 id="h-edit">Montage et son</h2></div>
+    <div class="specs">
+      <div class="spec"><h3>Étalonnage</h3><p>Température +8 à +12, hautes lumières −15, contraste doux, léger grain.</p><p>L'or doit rester doré, jamais orange.</p></div>
+      <div class="spec"><h3>Textes</h3><p>Serif fine (style Didot) en ivoire sur les plans sombres, en noir chaud sur le satin clair.</p><p>Toujours dans le tiers supérieur, 1,5&nbsp;s minimum à l'écran.</p></div>
+      <div class="spec"><h3>Coupe</h3><p>Coupes sur les temps de la musique, la première pile à 2&nbsp;s.</p><p>Raccords de gestes, main devant l'objectif, ralenti sur le plan&nbsp;4.</p></div>
+      <div class="spec"><h3>Musique</h3><p>Deep house douce ou R&amp;B lent, 95 à 115 BPM, accent à 0:02.</p><p>Compte pro&nbsp;: uniquement la Commercial Music Library de TikTok.</p></div>
+      <div class="spec"><h3>Mixage</h3><p>Voix off à 100&nbsp;%, musique à 20–25&nbsp;% dessous, remontée à 60&nbsp;% sur le plan&nbsp;8.</p><p>Un léger scintillement sonore sur le reflet du plan&nbsp;1.</p></div>
+      <div class="spec"><h3>Publication</h3><p>Légende avec une question, commentaire épinglé avec les 5 noms de pièces.</p><p>Hashtags&nbsp;: #bijouxdorés #acierinoxydable #jewelrytok #ylinebijoux</p></div>
+    </div>
+  </section>
+
+  <footer>Prix relevés sur yline.fr le 11 octobre 2026. Revérifie-les avant de publier. Illustrations indicatives&nbsp;: elles montrent le cadrage, pas les bijoux réels.</footer>
+</div>
+
+<script>
+(function () {
+  var NB = " ";
+  var SHOTS = [
+    { n: 1, t0: 0, t1: 2, name: "Le hook", art: "ring", mv: "spin",
+      ov: { text: "On dirait de l'or fin… non" + NB + "?" },
+      vo: "On dirait de l'or fin… non" + NB + "?",
+      plan: "Macro", angle: "téléphone fixe, c'est la main qui tourne",
+      action: "La bague Angelica tourne lentement dans un rayon de soleil. Un éclat traverse le métal.",
+      tip: "Un petit miroir hors champ renvoie l'éclat. Exposition baissée à −0,7." },
+    { n: 2, t0: 2, t1: 4, name: "La superposition", art: "stack", mv: "rise",
+      ov: { text: "Acier inoxydable doré" },
+      vo: "Acier inoxydable doré.",
+      plan: "Très gros plan", angle: "plongée légère à 45°, fixe",
+      action: "Un doigt glisse la bague Bedra contre Angelica.",
+      tip: "Filme aussi le geste inverse. En marche arrière, il est souvent plus fluide." },
+    { n: 3, t0: 4, t1: 7, name: "La matière", art: "satin", mv: "pan", light: true,
+      ov: { text: "Hypoallergénique · Sans nickel · Ne s'oxyde pas", cls: "small" },
+      vo: "Hypoallergénique… il ne s'oxyde pas.",
+      plan: "Gros plan", angle: "travelling latéral lent",
+      action: "La main baguée glisse sur un satin ivoire. La netteté passe du tissu au métal.",
+      tip: "Mise au point sur le tissu, puis touche la bague à l'écran pour le passage de netteté." },
+    { n: 4, t0: 7, t1: 10, name: "Les boucles", art: "ear", mv: "zoom",
+      lbl: "Boucles «" + NB + "Ayana" + NB + "»",
+      vo: "Des boucles…",
+      plan: "Gros plan ¾ profil", angle: "fixe, à hauteur d'oreille",
+      action: "Elle glisse ses cheveux derrière l'oreille et tourne la tête vers la fenêtre. La boucle scintille.",
+      tip: "Garde ce plan au ralenti. C'est le plan «" + NB + "campagne" + NB + "»." },
+    { n: 5, t0: 10, t1: 13, name: "Le collier", art: "neck", mv: "push",
+      lbl: "Collier «" + NB + "Giulia" + NB + "»",
+      vo: "…un collier…",
+      plan: "Gros plan buste", angle: "légère contre-plongée, avance lente",
+      action: "Les doigts suivent la chaîne du collier sur la clavicule.",
+      tip: "Un peu d'huile sèche ou d'enlumineur sur la clavicule accroche la lumière." },
+    { n: 6, t0: 13, t1: 16, name: "Le bracelet", art: "wrist", mv: "wipe",
+      lbl: "Bracelet «" + NB + "Lunéa" + NB + "»",
+      vo: "…un bracelet.",
+      plan: "Gros plan poignet", angle: "fixe, puis la main passe devant l'objectif",
+      action: "Le poignet tourne, le bracelet glisse, les bagues restent visibles. La main passe devant l'objectif pour la transition.",
+      tip: "Commence le plan 7 main devant l'objectif. Le raccord se fait tout seul." },
+    { n: 7, t0: 16, t1: 19, name: "Le look complet", art: "mirror", mv: "pull",
+      ov: { text: "Le look complet" + NB + ": 48,50" + NB + "€" },
+      vo: "Le look complet" + NB + "? Moins de cinquante euros.",
+      plan: "Plan moyen", angle: "face caméra ou reflet dans un miroir",
+      action: "Regard vers l'objectif, léger sourire, main posée sur le collier.",
+      tip: "Lumière de face, légèrement de côté. Jamais le plafonnier." },
+    { n: 8, t0: 19, t1: 23, name: "Le CTA", art: "flatlay", mv: "none", light: true,
+      ov: { text: "Compose ton look doré ✨" }, cta: "yline.fr · lien en bio",
+      vo: "Yline Bijoux. Ton éclat, pièce par pièce.",
+      plan: "Vue du dessus", angle: "plongée totale, fixe",
+      action: "Les 5 pièces posées sur le satin avec le packaging Yline. Une main pose la dernière bague.",
+      tip: "Laisse de la place en haut du cadre pour le texte du CTA." }
+  ];
+  var TOTAL = 23;
+
+  function sp(x, y, r) {
+    var a = (r * 0.19).toFixed(2);
+    return '<path class="spark" d="M' + x + ',' + (y - r) + ' L' + (x + +a) + ',' + (y - a) + ' L' + (x + r) + ',' + y + ' L' + (x + +a) + ',' + (y + +a) + ' L' + x + ',' + (y + r) + ' L' + (x - a) + ',' + (y + +a) + ' L' + (x - r) + ',' + y + ' L' + (x - a) + ',' + (y - a) + 'Z" fill="#FFF6DD" filter="url(#fGlow)"/>';
+  }
+  var BOKEH = '<g filter="url(#fSoft)"><circle cx="16" cy="44" r="6" fill="#E9C77F" opacity=".28"/><circle cx="74" cy="30" r="8" fill="#E9C77F" opacity=".2"/><circle cx="78" cy="136" r="7" fill="#E9C77F" opacity=".16"/><circle cx="12" cy="128" r="5" fill="#E9C77F" opacity=".14"/></g>';
+
+  var ART = {
+    ring:
+      '<rect width="90" height="160" fill="url(#gBg)"/>' +
+      '<polygon points="0,0 30,0 90,96 90,132" fill="url(#gBeam)"/>' + BOKEH +
+      '<g transform="rotate(-10 45 112)">' +
+        '<path d="M29,96 A16,5.5 0 0 1 61,96" fill="none" stroke="#6E4F1D" stroke-width="4"/>' +
+        '<rect x="33" y="62" width="24" height="120" rx="12" fill="url(#gSkin)"/>' +
+        '<ellipse cx="45" cy="69" rx="8.5" ry="5.5" fill="#F0D2B6" opacity=".75"/>' +
+        '<path d="M29,96 A16,5.5 0 0 0 61,96" fill="none" stroke="url(#gGold)" stroke-width="5" stroke-linecap="round"/>' +
+      '</g>' + sp(57, 91, 7),
+    stack:
+      '<rect width="90" height="160" fill="url(#gBg)"/>' +
+      '<polygon points="0,10 26,0 90,70 90,104" fill="url(#gBeam)"/>' + BOKEH +
+      '<path d="M26,84 A19,6 0 0 1 64,84" fill="none" stroke="#6E4F1D" stroke-width="2.4"/>' +
+      '<path d="M26,104 A19,6.5 0 0 1 64,104" fill="none" stroke="#6E4F1D" stroke-width="6"/>' +
+      '<rect x="29" y="28" width="32" height="150" rx="16" fill="url(#gSkin)"/>' +
+      '<ellipse cx="45" cy="38" rx="11" ry="8" fill="#F0D2B6" opacity=".75"/>' +
+      '<path d="M26,84 A19,6 0 0 0 64,84" fill="none" stroke="url(#gGold)" stroke-width="2.6" stroke-linecap="round"/>' +
+      '<path d="M26,104 A19,6.5 0 0 0 64,104" fill="none" stroke="url(#gGold)" stroke-width="6.5" stroke-linecap="round"/>' +
+      sp(60, 107, 6) +
+      '<path d="M75,104 V80" stroke="#F3EADB" stroke-opacity=".55" stroke-width=".8" stroke-dasharray="2 2"/>' +
+      '<path d="M72,84 L75,79 L78,84" fill="none" stroke="#F3EADB" stroke-opacity=".55" stroke-width=".8"/>',
+    satin:
+      '<rect width="90" height="160" fill="url(#gSatin)"/>' +
+      '<g filter="url(#fSoft)" fill="none">' +
+        '<path d="M-10,34 C22,18 52,58 100,36" stroke="#A88C66" stroke-width="11" opacity=".45"/>' +
+        '<path d="M-10,70 C28,56 56,96 100,76" stroke="#FFF9EF" stroke-width="10" opacity=".7"/>' +
+        '<path d="M-10,112 C26,96 60,134 100,112" stroke="#A88C66" stroke-width="13" opacity=".38"/>' +
+        '<path d="M-10,148 C30,136 58,160 100,146" stroke="#FFF9EF" stroke-width="9" opacity=".6"/>' +
+      '</g>' +
+      '<g transform="rotate(-38 58 118)">' +
+        '<rect x="40" y="128" width="40" height="60" rx="15" fill="url(#gSkin)"/>' +
+        '<rect x="40" y="76" width="10.5" height="66" rx="5.25" fill="url(#gSkin)"/>' +
+        '<rect x="51.5" y="68" width="10.5" height="74" rx="5.25" fill="url(#gSkin)"/>' +
+        '<rect x="63" y="72" width="10.5" height="70" rx="5.25" fill="url(#gSkin)"/>' +
+        '<rect x="74" y="84" width="9.5" height="58" rx="4.75" fill="url(#gSkin)"/>' +
+        '<rect x="50.6" y="98" width="12.3" height="4.6" rx="1.4" fill="url(#gGold)"/>' +
+        '<rect x="39.2" y="104" width="12.1" height="2.6" rx="1" fill="url(#gGold)"/>' +
+        '<rect x="62.2" y="102" width="12.1" height="2.6" rx="1" fill="url(#gGold)"/>' +
+      '</g>' + sp(47, 103, 5),
+    ear:
+      '<rect width="90" height="160" fill="url(#gWindow)"/>' +
+      '<polygon points="0,30 0,90 70,130 60,96" fill="url(#gBeam)"/>' +
+      '<path d="M24,26 C16,44 22,60 16,72 C13,78 19,81 20,85 C18,91 22,95 24,99 C26,110 32,116 36,122 L33,160 L74,160 L72,118 C66,100 62,88 63,62 C62,38 46,20 24,26Z" fill="url(#gSkin)"/>' +
+      '<path d="M28,16 C50,2 86,10 90,46 C94,82 82,106 76,128 C71,112 67,98 63,86 C60,70 62,50 56,40 C48,30 38,26 28,16Z" fill="#2A1C14"/>' +
+      '<ellipse cx="57" cy="76" rx="4.6" ry="7.4" fill="#C68C64"/>' +
+      '<ellipse cx="57.6" cy="76" rx="2.4" ry="4.6" fill="#A86F4C" opacity=".6"/>' +
+      '<rect x="56.4" y="83" width="1.2" height="7" fill="#D9B56A"/>' +
+      '<circle cx="57" cy="94" r="3.4" fill="url(#gGold)"/>' + sp(60, 92, 5.5),
+    neck:
+      '<rect width="90" height="160" fill="url(#gBg)"/>' +
+      '<polygon points="0,0 40,0 90,80 90,120" fill="url(#gBeam)"/>' +
+      '<path d="M31,0 L59,0 L61,50 C70,60 90,62 90,68 L90,160 L0,160 L0,68 C0,62 20,60 29,50Z" fill="url(#gSkin)"/>' +
+      '<path d="M6,80 C18,75 32,77 41,82 M84,80 C72,75 58,77 49,82" stroke="#9E6A48" stroke-opacity=".5" stroke-width="1.4" fill="none" stroke-linecap="round"/>' +
+      '<path d="M0,120 C22,106 68,106 90,120 L90,160 L0,160Z" fill="#0F0B09"/>' +
+      '<path d="M30,48 C32,90 58,90 60,48" fill="none" stroke="url(#gGold)" stroke-width="1.4"/>' +
+      '<circle cx="45" cy="82.5" r="2.8" fill="url(#gGold)"/>' + sp(48, 80, 5) +
+      '<path d="M8,18 V8 H18 M82,18 V8 H72 M8,142 V152 H18 M82,142 V152 H72" fill="none" stroke="#F3EADB" stroke-opacity=".5" stroke-width=".9"/>',
+    wrist:
+      '<rect width="90" height="160" fill="url(#gSatinDark)"/>' +
+      '<g filter="url(#fSoft)" fill="none"><path d="M-10,50 C25,36 55,70 100,52" stroke="#6B4E36" stroke-width="12" opacity=".5"/><path d="M-10,130 C30,114 60,150 100,128" stroke="#6B4E36" stroke-width="12" opacity=".4"/></g>' +
+      '<polygon points="0,0 34,0 90,90 90,124" fill="url(#gBeam)"/>' +
+      '<g transform="rotate(32 45 100)">' +
+        '<path d="M26,84 A19,6 0 0 1 64,84" fill="none" stroke="#6E4F1D" stroke-width="3.4"/>' +
+        '<rect x="31" y="70" width="28" height="120" rx="13" fill="url(#gSkin)"/>' +
+        '<rect x="27" y="22" width="36" height="54" rx="15" fill="url(#gSkin)"/>' +
+        '<rect x="33" y="30" width="9" height="2.4" rx="1" fill="url(#gGold)"/>' +
+        '<rect x="47" y="28" width="9" height="2.4" rx="1" fill="url(#gGold)"/>' +
+        '<path d="M26,84 A19,6 0 0 0 64,84" fill="none" stroke="url(#gGold)" stroke-width="3.6" stroke-linecap="round"/>' +
+      '</g>' + sp(56, 95, 5) +
+      '<rect class="wipe" x="74" y="-10" width="46" height="180" rx="20" fill="#0B0806" filter="url(#fSoft)" opacity=".92"/>',
+    mirror:
+      '<rect width="90" height="160" fill="url(#gRoom)"/>' +
+      '<polygon points="0,10 22,0 90,110 90,150" fill="url(#gBeam)"/>' +
+      '<path d="M16,152 L16,52 A29,29 0 0 1 74,52 L74,152Z" fill="#2B1F17"/>' +
+      '<g clip-path="url(#cArch)">' +
+        '<rect x="16" y="20" width="58" height="140" fill="url(#gMirror)"/>' +
+        '<ellipse cx="45" cy="64" rx="14" ry="17" fill="#22170F"/>' +
+        '<rect x="41" y="74" width="8" height="15" fill="url(#gSkin)"/>' +
+        '<ellipse cx="45" cy="67" rx="9.5" ry="12" fill="url(#gSkin)"/>' +
+        '<path d="M22,160 C22,104 30,90 45,88 C60,90 68,104 68,160Z" fill="#0F0B09"/>' +
+        '<path d="M38,88 L45,100 L52,88Z" fill="url(#gSkin)"/>' +
+        '<path d="M39.5,86 C40.5,96 49.5,96 50.5,86" fill="none" stroke="url(#gGold)" stroke-width=".9"/>' +
+        '<circle cx="45" cy="94.6" r="1.3" fill="#E7C987"/>' +
+        '<circle cx="35.2" cy="71" r="1.2" fill="#E7C987"/><circle cx="54.8" cy="71" r="1.2" fill="#E7C987"/>' +
+        '<ellipse cx="53" cy="98" rx="3.6" ry="5.4" fill="url(#gSkin)" transform="rotate(-20 53 98)"/>' +
+        '<rect x="49.6" y="102.4" width="7" height="1.6" fill="#E7C987" transform="rotate(-20 53 103)"/>' +
+      '</g>' +
+      '<path d="M16,152 L16,52 A29,29 0 0 1 74,52 L74,152Z" fill="none" stroke="url(#gGold)" stroke-width="1.3"/>' + sp(56, 70, 3.5),
+    flatlay:
+      '<rect width="90" height="160" fill="url(#gSatin)"/>' +
+      '<g filter="url(#fSoft)" fill="none"><path d="M-10,60 C20,48 60,82 100,62" stroke="#A88C66" stroke-width="12" opacity=".35"/><path d="M-10,104 C30,92 56,124 100,104" stroke="#FFF9EF" stroke-width="10" opacity=".7"/><path d="M-10,146 C26,134 62,160 100,142" stroke="#A88C66" stroke-width="12" opacity=".3"/></g>' +
+      '<g filter="url(#fDrop)">' +
+        '<path d="M10,62 C12,100 50,104 58,64" fill="none" stroke="url(#gGold)" stroke-width="1.2"/>' +
+        '<circle cx="32" cy="95" r="2.6" fill="url(#gGold)"/>' +
+        '<circle cx="24" cy="126" r="11.5" fill="none" stroke="url(#gGold)" stroke-width="2.2"/>' +
+        '<circle cx="66" cy="76" r="4.6" fill="none" stroke="url(#gGold)" stroke-width="2.4"/>' +
+        '<circle cx="47" cy="113" r="1.5" fill="#D9B56A"/><circle cx="47" cy="118" r="2.4" fill="url(#gGold)"/>' +
+        '<circle cx="54" cy="112" r="1.5" fill="#D9B56A"/><circle cx="54" cy="117" r="2.4" fill="url(#gGold)"/>' +
+        '<rect x="56" y="124" width="28" height="24" rx="2" fill="#17110C"/>' +
+        '<rect x="56" y="124" width="28" height="5" rx="1.5" fill="#241A13"/>' +
+        '<text x="70" y="140" text-anchor="middle" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="4.6" letter-spacing=".9" fill="#D4AF6A">YLINE</text>' +
+      '</g>' +
+      '<rect x="72" y="88" width="34" height="11" rx="5.5" fill="url(#gSkin)"/>' +
+      '<circle cx="72" cy="93.5" r="4.4" fill="none" stroke="url(#gGold)" stroke-width="2.2"/>' + sp(68, 90, 4.5)
+  };
+
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function fmt(t) { var s = Math.floor(t); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+  function frameInner(s, withSub) {
+    var h = '<span class="art-wrap"><svg class="art" viewBox="0 0 90 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">' + ART[s.art] + '</svg></span>';
+    if (s.lbl) h += '<span class="lbl">' + esc(s.lbl) + '</span>';
+    if (s.ov) h += '<span class="ov top ' + (s.ov.cls || "") + '">' + esc(s.ov.text) + '</span>';
+    if (s.cta) h += '<span class="ov cta">' + esc(s.cta) + '</span>';
+    if (withSub) h += '<span class="sub">' + esc(s.vo) + '</span>';
+    h += '<span class="safe" aria-hidden="true"></span>';
+    return h;
+  }
+
+  /* Shot cards */
+  var shotsEl = document.getElementById("shots");
+  shotsEl.innerHTML = SHOTS.map(function (s, i) {
+    var onscreen = s.ov ? s.ov.text + (s.cta ? " · " + s.cta : "") : (s.lbl || "");
+    return '<article class="shot" id="plan-' + s.n + '">' +
+      '<button type="button" class="thumb frame' + (s.light ? " light" : "") + '" data-seek="' + i + '" aria-label="Voir le plan ' + s.n + ' dans l\'animatique">' + frameInner(s, false) + '</button>' +
+      '<div class="shot-body">' +
+        '<p class="shot-meta">Plan ' + s.n + ' · ' + fmt(s.t0) + '–' + fmt(s.t1) + ' · ' + (s.t1 - s.t0) + ' s</p>' +
+        '<h3>' + esc(s.name) + '</h3>' +
+        '<p class="action">' + esc(s.action) + '</p>' +
+        '<dl>' +
+          '<div><dt>Cadrage</dt><dd>' + esc(s.plan) + ', ' + esc(s.angle) + '</dd></div>' +
+          '<div><dt>À l\'écran</dt><dd class="onscreen">' + esc(onscreen) + '</dd></div>' +
+          '<div><dt>Voix off</dt><dd>«' + NB + esc(s.vo) + NB + '»</dd></div>' +
+          '<div><dt>Astuce</dt><dd>' + esc(s.tip) + '</dd></div>' +
+        '</dl>' +
+      '</div>' +
+    '</article>';
+  }).join("");
+
+  /* Animatic */
+  var player = document.getElementById("player");
+  var pframe = document.getElementById("pframe");
+  var playBtn = document.getElementById("play");
+  var tcEl = document.getElementById("tc");
+  var timeline = document.getElementById("timeline");
+  var playhead = document.getElementById("playhead");
+  var segs = SHOTS.map(function (s, i) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "seg";
+    b.style.flexGrow = String(s.t1 - s.t0);
+    b.textContent = s.n;
+    b.setAttribute("aria-label", "Plan " + s.n + ", " + fmt(s.t0) + " à " + fmt(s.t1));
+    b.addEventListener("click", function () { seek(i); });
+    timeline.insertBefore(b, playhead);
+    return b;
+  });
+
+  var t = 0, playing = false, last = 0, cur = -1;
+
+  function indexAt(time) {
+    for (var i = 0; i < SHOTS.length; i++) if (time < SHOTS[i].t1) return i;
+    return SHOTS.length - 1;
+  }
+  function show(i, offset) {
+    var s = SHOTS[i];
+    pframe.className = "frame" + (s.light ? " light" : "");
+    pframe.style.setProperty("--dur", (s.t1 - s.t0) + "s");
+    pframe.style.setProperty("--delay", (-offset) + "s");
+    pframe.innerHTML = frameInner(s, true);
+    pframe.setAttribute("aria-label", "Plan " + s.n + " : " + s.action);
+    var w = pframe.querySelector(".art-wrap");
+    if (s.mv !== "none") w.classList.add("mv-" + s.mv);
+    segs.forEach(function (b, k) { b.setAttribute("aria-current", k === i ? "true" : "false"); });
+    cur = i;
+  }
+  function paint() {
+    tcEl.textContent = fmt(t) + " / " + fmt(TOTAL);
+    playhead.style.left = (t / TOTAL * 100) + "%";
+  }
+  function setPlaying(on) {
+    playing = on;
+    player.classList.toggle("paused", !on);
+    playBtn.querySelector(".i-play").hidden = on;
+    playBtn.querySelector(".i-pause").hidden = !on;
+    playBtn.setAttribute("aria-label", on ? "Mettre en pause" : "Lire l'animatique");
+  }
+  function tick(now) {
+    if (!playing) return;
+    t += (now - last) / 1000;
+    last = now;
+    if (t >= TOTAL) { t = TOTAL; setPlaying(false); paint(); return; }
+    var i = indexAt(t);
+    if (i !== cur) show(i, t - SHOTS[i].t0);
+    paint();
+    requestAnimationFrame(tick);
+  }
+  function seek(i) {
+    t = SHOTS[i].t0;
+    show(i, 0);
+    paint();
+  }
+  playBtn.addEventListener("click", function () {
+    if (playing) { setPlaying(false); return; }
+    if (t >= TOTAL) { t = 0; }
+    show(indexAt(t), t - SHOTS[indexAt(t)].t0);
+    setPlaying(true);
+    last = performance.now();
+    requestAnimationFrame(tick);
+  });
+  shotsEl.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-seek]");
+    if (!b) return;
+    setPlaying(false);
+    seek(+b.getAttribute("data-seek"));
+    player.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  document.getElementById("safeToggle").addEventListener("change", function (e) {
+    document.getElementById("page").classList.toggle("show-safe", e.target.checked);
+  });
+  show(0, 0);
+  paint();
+
+  /* Checklist (remembered in this browser only) */
+  var KEY = "golden-hour-checklist";
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("#check input"));
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (err) { saved = {}; }
+  function count() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    document.getElementById("count").textContent = n + " / " + boxes.length + " prêts";
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.id];
+    b.addEventListener("change", function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (err) {}
+      count();
+    });
+  });
+  count();
+})();
+</script>

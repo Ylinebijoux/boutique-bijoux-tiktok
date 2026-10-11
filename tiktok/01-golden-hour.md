@@ -96,6 +96,7 @@ Dans l'ordre d'apparition :
 - Garde les textes dans le **tiers supérieur ou au centre**. Le bas (~20 %) et le bord droit sont couverts par l'interface TikTok (légende, boutons).
 - Chaque texte reste au moins 1,5 s à l'écran pour qu'on ait le temps de le lire.
 - Ajoute les sous-titres automatiques de la voix off dans la même police, en plus petit (beaucoup regardent sans le son).
+- Couleur : ivoire sur les plans sombres, **noir chaud `#1E1611`** sur les plans clairs (satin des plans 3 et 8), sinon le texte disparaît.
 
 ## 6. Voix off (≈ 35 mots, ~20 s)
 
@@ -109,6 +110,10 @@ Dans l'ordre d'apparition :
 **Comment la dire :** voix féminine posée, proche du micro, avec le sourire. Débit lent et calme, sans chuchoter. Marque une vraie pause après « non ? » et après « Le look complet ? ».
 
 **Comment l'enregistrer :** téléphone à 15 cm de la bouche, dans une pièce pleine de tissus (un dressing, c'est parfait). Enregistre 3 prises et garde la plus naturelle.
+
+**Voix off déjà générée** (ElevenLabs, voix « LyLyPodcast ») dans [`audio/`](audio/) :
+- `voix-off-prise-1.mp3`, `-2`, `-3` : 3 prises brutes d'environ 17 s.
+- `voix-off-calee-23s.mp3` : la prise 1 découpée, avec chaque phrase placée sur son plan (0:00, 0:02, 0:04, 0:07, 0:10, 0:13, 0:16, 0:19). Tu peux la poser telle quelle sur ton montage CapCut.
 
 ## 7. Plan de tournage (shot by shot)
 
@@ -150,7 +155,7 @@ Règle générale : filme chaque plan **5–6 s, 3 fois**. On ne garde que 2–3
 
 - **Palette :** or chaud, ivoire, champagne, beige, avec du noir en contraste. Pas de jaune vif ni de couleurs saturées autour.
 - **Étalonnage (CapCut) :** température +8 à +12, hautes lumières -15 (on garde le détail du métal), contraste doux, saturation à peine augmentée, léger grain (5–10). L'or doit rester or, pas orange.
-- **Typographie :** une serif fine et élégante (style Playfair Display, Didot ou Bodoni) pour les gros textes, et une sans-serif fine en petites capitales pour les noms de pièces. Texte ivoire `#F8F3EA`, mot-clé possible en doré `#C9A45C`, ombre très légère pour la lisibilité.
+- **Typographie :** une serif fine et élégante (style Playfair Display, Didot ou Bodoni) pour les gros textes, et une sans-serif fine en petites capitales pour les noms de pièces. Texte ivoire `#F8F3EA` sur fond sombre, noir chaud `#1E1611` sur fond clair, mot-clé possible en doré `#C9A45C`, ombre très légère pour la lisibilité.
 - **Rythme :** 8 plans en 23 s (≈ 2,8 s par plan). Coupe **sur les temps** de la musique. La première coupe tombe pile à 2 s.
 - **Transitions :** raccords de gestes (main → main), passage de la main devant l'objectif, petit coup de zoom (100 → 110 %) sur les plans 4–6, ralenti (speed ramp) sur la tête qui tourne au plan 4. Évite les transitions « effet spécial » de CapCut, qui font cheap.
 - **Effet :** un seul petit scintillement sur le reflet du plan 1. Pas plus.
@@ -164,6 +169,12 @@ Règle générale : filme chaque plan **5–6 s, 3 fois**. On ne garde que 2–3
 - **Sound design :** petit « shimmer / ding » discret sur le reflet du plan 1, « whoosh » très léger sur la transition main devant l'objectif.
 
 ---
+
+## Storyboard, animatique et montage automatique
+
+- **Storyboard interactif** (animatique de 23 s, 8 plans illustrés, check-list de tournage) : [`01-golden-hour-storyboard.html`](01-golden-hour-storyboard.html), publié sur https://claude.ai/artifact/Fc9thnsA4iSYmmhgmbWeTW
+- **Animatique vidéo** avec la voix off calée : [`01-golden-hour-animatique.mp4`](01-golden-hour-animatique.mp4). Les images sont des illustrations ; elle sert à juger le rythme, pas le rendu final.
+- **Montage automatique à partir de tes photos** : [`video/`](video/README.md). Mets tes 8 photos dans `video/photos/` et lance `python generer_video.py`.
 
 ## Version courte (15 s)
 
