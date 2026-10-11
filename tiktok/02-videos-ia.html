@@ -1,0 +1,220 @@
+<title>Vidéos IA Yline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=DM+Mono:wght@400;500&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: a jewellery-case dark page; summary of the 3 variants first, then method, muse, style, and each variant's shot list with copyable prompts. */
+:root {
+  --velvet: #15100D;
+  --velvet-2: #1D1612;
+  --velvet-3: #251C17;
+  --line: #3A2E25;
+  --ivory: #F3EADB;
+  --muted: #B5A591;
+  --gold: #D4AF6A;
+  --gold-deep: #8E6E36;
+  --ink: #1E1611;
+  --f-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-body: "Jost", "Futura", "Avenir Next", system-ui, sans-serif;
+  --f-mono: "DM Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--velvet); color: var(--ivory); font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; }
+@media (max-width: 480px) { .wrap { padding-inline: 16px; padding-block: 28px 48px; } }
+a { color: inherit; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: 0; }
+h1 { font-family: var(--f-display); font-style: italic; font-weight: 500; font-size: clamp(46px, 9vw, 96px); line-height: .98; margin: .14em 0 .2em; text-wrap: balance; }
+h2 { font-family: var(--f-display); font-weight: 500; font-size: clamp(28px, 4.4vw, 42px); line-height: 1.1; margin: 0 0 18px; text-wrap: balance; }
+h3 { font-family: var(--f-mono); font-weight: 500; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin: 28px 0 12px; }
+p { margin: 0; }
+.lede { max-width: 62ch; color: var(--muted); font-size: 17px; }
+section { margin-top: 72px; }
+
+.picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; margin-top: 32px; }
+.pick { display: grid; gap: 6px; align-content: start; text-decoration: none; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--velvet-2); }
+.pick:hover { border-color: var(--gold-deep); }
+.pick .n { font-family: var(--f-mono); font-size: 12px; color: var(--gold); letter-spacing: .08em; }
+.pick .t { font-family: var(--f-display); font-size: 26px; line-height: 1.15; }
+.pick .h { font-family: var(--f-display); font-style: italic; color: var(--muted); font-size: 17px; }
+
+.steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 22px 32px; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 4px 12px; align-content: start; }
+.steps li::before { content: counter(s); grid-row: span 2; font-family: var(--f-display); font-size: 28px; line-height: 1; color: var(--gold); }
+.steps b { font-weight: 500; }
+.steps span { color: var(--muted); font-size: 15px; }
+.rules { margin-top: 28px; padding: 18px 20px; border-left: 2px solid var(--gold); background: var(--velvet-2); border-radius: 0 12px 12px 0; }
+.rules ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 15px; }
+
+.prompt { margin: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--velvet-3); overflow: hidden; }
+.prompt header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--line); }
+.prompt .lab { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.prompt pre { margin: 0; padding: 12px 14px 14px; white-space: pre-wrap; word-break: break-word; font-family: var(--f-mono); font-size: 13px; line-height: 1.6; color: var(--ivory); }
+.copy { font-family: var(--f-body); font-size: 13px; font-weight: 500; color: var(--ink); background: var(--gold); border: 0; border-radius: 999px; padding: 6px 14px; cursor: pointer; flex: none; }
+.copy:hover { background: #E3C27F; }
+.copy.done { background: var(--ivory); }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--ivory); outline-offset: 3px; }
+.stack { display: grid; gap: 12px; }
+
+.style { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 20px 32px; margin-bottom: 22px; }
+.style div { display: grid; gap: 4px; align-content: start; }
+.style b { font-family: var(--f-mono); font-weight: 500; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+.style span { font-size: 15px; }
+.muse-desc { max-width: 70ch; margin-bottom: 18px; }
+
+.variant { border-top: 1px solid var(--gold-deep); padding-top: 28px; }
+.vhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+.vhead h2 { margin: 0; }
+.vhead .meta { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.vhook { margin-top: 16px; font-family: var(--f-display); font-style: italic; font-size: clamp(24px, 4vw, 34px); line-height: 1.2; color: var(--gold); }
+.vhook small { display: block; font-family: var(--f-mono); font-style: normal; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.vconcept { max-width: 68ch; margin-top: 14px; }
+.vpieces { margin-top: 12px; font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.vis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px 28px; }
+.vis div { display: grid; gap: 2px; align-content: start; }
+.vis b { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.vis span { font-size: 15px; }
+
+.shots { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; }
+.shot { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 18px; padding: 18px; background: var(--velvet-2); border: 1px solid var(--line); border-radius: 14px; }
+@media (max-width: 620px) { .shot { grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 14px; } }
+.shot .time { font-family: var(--f-mono); font-size: 14px; color: var(--gold); font-variant-numeric: tabular-nums; }
+.shot .num { font-family: var(--f-mono); font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.shot h4 { font-family: var(--f-display); font-weight: 500; font-size: 22px; line-height: 1.2; margin: 0 0 6px; }
+.chip { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--gold-deep); color: var(--gold); margin-bottom: 8px; }
+.shot .what { font-size: 15px; margin-bottom: 10px; }
+.facts { display: grid; gap: 6px; margin: 0 0 14px; }
+.facts div { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 10px; font-size: 14px; }
+@media (max-width: 480px) { .facts div { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+.facts dt { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.facts dd { margin: 0; }
+.facts dd.screen { font-family: var(--f-display); font-style: italic; font-size: 17px; }
+.facts dd.refs { font-family: var(--f-mono); font-size: 12px; color: var(--muted); word-break: break-word; }
+.texts { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-family: var(--f-display); font-style: italic; font-size: 18px; }
+.cta { margin-top: 18px; font-size: 15px; }
+.cta b { color: var(--gold); font-weight: 500; }
+.bonus { margin-top: 8px; color: var(--muted); font-size: 15px; }
+.edit { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: 15px; max-width: 72ch; }
+footer { margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--line); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Yline Bijoux · TikTok #02 · Muse IA</p>
+    <h1>Vidéos IA Yline</h1>
+    <p class="lede" id="intro"></p>
+    <nav class="picker" id="picker" aria-label="Variantes"></nav>
+  </header>
+
+  <section aria-labelledby="h-method">
+    <h2 id="h-method">La méthode</h2>
+    <ol class="steps" id="steps"></ol>
+    <div class="rules"><h3 style="margin-top:0">À respecter</h3><ul id="rules"></ul></div>
+  </section>
+
+  <section aria-labelledby="h-muse">
+    <h2 id="h-muse">La muse</h2>
+    <p class="muse-desc" id="muse-desc"></p>
+    <div class="stack" id="muse-prompts"></div>
+  </section>
+
+  <section aria-labelledby="h-style">
+    <h2 id="h-style">Le style commun</h2>
+    <div class="style" id="style"></div>
+    <div id="keywords"></div>
+  </section>
+
+  <div id="variants"></div>
+
+  <section aria-labelledby="h-edit">
+    <h2 id="h-edit">Le montage</h2>
+    <ul class="edit" id="edit"></ul>
+  </section>
+
+  <footer>Prix relevés sur yline.fr le 11 octobre 2026. Les noms d'outils sont des exemples : utilise ceux que tu préfères.</footer>
+</div>
+
+<script type="application/json" id="data">{"titre": "Vidéos IA Yline", "intro": "Trois vidéos TikTok de 15 à 20 s avec une muse générée par IA qui porte tes vrais bijoux. Tu génères les images et les vidéos dans les outils de ton choix ; ici, tu as la méthode, la muse, le style, et un prompt prêt à copier pour chaque plan.", "workflow": [["Crée ta muse, une seule fois", "Génère le portrait avec le prompt « Muse » dans un générateur d'images (par exemple Midjourney, Gemini, ChatGPT Images ou Flux). Garde la meilleure image et nomme-la muse.png : c'est la référence de toutes tes vidéos. Le même visage partout rend ta muse reconnaissable."], ["Mets-lui tes vrais bijoux", "Dans un outil qui accepte plusieurs images de référence (par exemple Gemini, Flux Kontext ou ChatGPT Images), envoie muse.png, la photo produit du bijou et le prompt « Image » du plan. Les photos produits sont dans tiktok/video/photos/look/ du dépôt. Format 9:16."], ["Vérifie le bijou", "Compare avec la photo produit : forme, maillons, pierres, couleur. S'il a changé, régénère. La vidéo ne doit jamais montrer un bijou différent de celui que tu vends."], ["Anime chaque image", "Dans un outil image vers vidéo (par exemple Kling, Veo, Runway, Hailuo ou Seedance dans CapCut), envoie l'image et le prompt « Vidéo ». Génère 5 s et garde les 1 à 3 meilleures secondes."], ["Monte dans CapCut", "Coupe sur le rythme du son, ajoute les textes toi-même (ne les fais jamais écrire par l'IA), les transitions et le son. Export 1080×1920, 30 i/s."], ["Publie en le signalant", "Dans les paramètres de publication TikTok, active « Contenu généré par l'IA ». TikTok le demande pour les images réalistes créées par IA."]], "regles": ["Le bijou à l'écran est exactement celui qui est vendu. Sinon, c'est trompeur et tu auras des retours.", "À l'écran, seulement ce qui est vrai : acier inoxydable doré, hypoallergénique, ne s'oxyde pas, et les prix réels. Jamais « or », « fait main » ou « édition limitée ».", "La muse ne doit ressembler à aucune personne réelle (célébrité, influenceuse).", "L'IA rate souvent les mains : vérifie les doigts de chaque plan de main, image par image.", "Prix relevés le 11/10/2026 sur yline.fr : vérifie-les avant de publier."], "muse": {"description": "Femme de 28 à 32 ans, traits fins, pommettes hautes, peau naturelle avec son grain (pas lissée). Cheveux brun foncé en chignon bas bien net, maquillage lumineux et discret, lèvres nude rosé, ongles amande courts couleur nude. Épaules relâchées, cou allongé, gestes lents, expression douce et sûre d'elle, jamais de grand sourire forcé. Adapte le teint et les cheveux à ta clientèle, puis garde-les identiques dans toutes les vidéos.", "prompt": "Editorial beauty portrait of an elegant woman in her late twenties, fine delicate features, high cheekbones, natural skin texture with visible pores, warm olive skin, sleek dark brown hair pulled back into a low polished bun, luminous minimal makeup, soft rosy-nude lips, short almond nude manicure, wearing a plain black off-shoulder top, no jewelry, warm beige seamless studio background, large soft key light from the left, subtle warm rim light on her hair, 85mm lens, f/2, shallow depth of field, photorealistic high-fashion campaign photography, filmic color grading, subtle film grain, vertical 9:16", "negatif": "plastic skin, airbrushed, doll face, extra fingers, fused fingers, deformed hands, extra jewelry, altered jewelry design, logo, text, watermark, cartoon, 3D render, oversaturated"}, "style": [["Rendu", "Photoréaliste, campagne de joaillerie. Objectif 85 mm pour la muse, macro 100 mm pour les bijoux, faible profondeur de champ, léger grain film, 4K."], ["Lumière", "Grande source douce à 45° (fenêtre ou softbox), contre-jour chaud qui détache les cheveux, reflets nets sur l'or. Jamais de lumière dure de face."], ["Couleurs", "Neutres chauds (ivoire, sable, taupe) et noir profond. L'or est la seule couleur vive. Étalonnage : contraste doux, noirs légèrement relevés, peau chaude."], ["Mouvement", "Plans courts (1 à 3 s) pour le rythme, mais mouvements lents à l'intérieur du plan : travelling avant, léger arc de caméra, tête qui tourne, doigts qui glissent. Ce contraste fait premium."], ["Pose", "Épaules relâchées, menton légèrement baissé, regard hors champ puis un seul regard caméra par vidéo. Mains détendues, doigts allongés."], ["Tenue", "Unie, sans motif ni logo : top noir épaules nues, robe en satin noir, blazer crème. Encolure dégagée pour les colliers, cheveux attachés pour les boucles."]], "mots_cles": "photorealistic, luxury jewelry campaign, high-fashion editorial, soft diffused light, crisp specular highlights on polished gold, natural skin texture, shallow depth of field, filmic color grading, subtle film grain, 4K", "variantes": [{"id": "luxe", "numero": "1", "nom": "Luxe premium", "titre": "L'Écrin", "duree": "18 s", "concept": "Une campagne de maison de joaillerie en 18 secondes. Velours noir pour les bijoux, studio beige pour la muse, et un faisceau de lumière qui révèle chaque pièce. Le montage est rapide (7 plans), mais chaque plan bouge lentement, comme dans une pub de grande maison.", "hook": "Personne ne devinera le prix.", "pieces": "Collier Giulia 8,90 € · Boucles Ayana 8,90 € · Bague Angelica 9,90 € = 27,70 €", "visuel": [["Décor", "Velours noir pour les macros, fond studio beige chaud pour la muse."], ["Tenue", "Top noir épaules nues, chignon bas."], ["Lumière", "Faisceau étroit et chaud sur les bijoux ; grande source douce et contre-jour sur la muse."], ["Palette", "Noir, beige, or."], ["Caméra", "Macro 100 mm, 85 mm, travellings lents, arc de 30° autour du bijou."], ["Transitions", "Zoom à travers l'anneau du pendentif vers la muse, un éclat doré de 2 images, le reste en coupes sur le temps."], ["Son", "Piano et beat deep house lent, environ 100 BPM, premier temps fort à 1 s."]], "plans": [{"t": "0–1 s", "nom": "Hook", "source": "Photo produit mise en scène", "refs": "look/4-giulia.jpg", "visuel": "Macro du pendentif Giulia sur velours noir, un éclat traverse le métal.", "texte": "Personne ne devinera le prix.", "transition": "Coupe sèche sur le premier temps.", "image": "Use the necklace from the reference image exactly as it is: same pendant, same stones, same chain, same gold tone. Extreme macro shot of the pendant resting on black velvet, a narrow beam of warm light, deep black background, crisp specular highlights on polished gold, tiny sparkles on the stones, 100mm macro lens, f/4, photorealistic luxury jewelry campaign, vertical 9:16, empty space in the upper third.", "video": "A narrow beam of warm light slowly sweeps from left to right across the pendant, the metal flashes with a bright glint, very slow push-in, everything else still, cinematic 24fps."}, {"t": "1–3 s", "nom": "Le collier en macro", "source": "Même image que le plan 1", "refs": "image du plan 1", "visuel": "La caméra tourne lentement autour du pendentif, les pierres scintillent.", "texte": "Collier Giulia", "transition": "Zoom à travers l'anneau du pendentif vers le plan 3.", "image": "", "video": "Slow 30-degree camera orbit around the pendant, the stones sparkle, the polished gold reflects the moving light, shallow depth of field, cinematic 24fps."}, {"t": "3–5 s", "nom": "Le collier porté", "source": "IA : muse + bijou", "refs": "muse.png + look/4-giulia.jpg", "visuel": "Le même pendentif, maintenant sur la clavicule de la muse. Travelling avant.", "texte": "(pas de texte)", "transition": "Raccord sur la forme ronde du pendentif.", "image": "Same woman as reference image 1, wearing exactly the necklace from reference image 2 resting on her collarbone, black off-shoulder top, tight crop from chin to chest, warm beige studio background, large soft key light from the left, warm rim light, natural skin texture, 85mm, f/2, photorealistic high-fashion jewelry campaign, filmic color grading, vertical 9:16.", "video": "Slow dolly-in toward the pendant, she breathes gently, a soft highlight glides across the gold, shallow depth of field, cinematic 24fps."}, {"t": "5–8 s", "nom": "Les boucles, de profil", "source": "IA : muse + bijou", "refs": "muse.png + look/3-ayana.jpg", "visuel": "Profil. Elle tourne lentement la tête vers la lumière, la boucle se balance et brille.", "texte": "Boucles Ayana", "transition": "Coupe sur le temps avec un éclat doré.", "image": "Same woman as reference image 1, side profile facing left, sleek low bun, wearing exactly the gold hoop earrings from reference image 2, black off-shoulder top, warm beige seamless background, soft light coming from the left and catching the earring, 85mm, f/2, photorealistic luxury campaign, vertical 9:16.", "video": "She slowly turns her head from profile toward the light, the earring sways slightly and catches a bright highlight, the camera slides gently to the right, cinematic slow motion."}, {"t": "8–10 s", "nom": "La main", "source": "IA : muse + 2 bijoux", "refs": "muse.png + look/4-giulia.jpg + look/1-angelica.jpg", "visuel": "Ses doigts glissent le long de la chaîne, la bague Angelica à l'index.", "texte": "Acier inoxydable doré", "transition": "Coupe sur le temps.", "image": "Close-up of the hand of the same woman as reference image 1, gently touching the necklace from reference image 2 at her collarbone, wearing exactly the ring from reference image 3 on her index finger, relaxed elongated fingers, short almond nude manicure, black off-shoulder top, soft warm light, 100mm, f/2.8, photorealistic, anatomically correct hand with five fingers, vertical 9:16.", "video": "Her fingers glide slowly along the chain, the ring catches the light, very subtle camera orbit, cinematic slow motion."}, {"t": "10–13 s", "nom": "Le regard", "source": "IA : muse + 2 bijoux", "refs": "muse.png + look/4-giulia.jpg + look/3-ayana.jpg", "visuel": "Face caméra. Elle lève les yeux vers l'objectif, demi-sourire.", "texte": "Hypoallergénique · Ne s'oxyde pas", "transition": "Fondu lumineux très court vers le plan 7.", "image": "Same woman as reference image 1, front-facing portrait from the chest up, wearing exactly the necklace from reference image 2 and the hoop earrings from reference image 3, black off-shoulder top, looking slightly down, warm beige studio background, soft key light from the left, warm rim light, 85mm, f/2, photorealistic high-fashion campaign, vertical 9:16.", "video": "She slowly raises her eyes to the camera and gives a subtle confident half-smile, a strand of hair moves slightly, slow push-in, cinematic."}, {"t": "13–18 s", "nom": "Le prix et la CTA", "source": "Photo produit mise en scène", "refs": "look/4-giulia.jpg + look/3-ayana.jpg + look/1-angelica.jpg", "visuel": "Les 3 pièces sur velours noir, vue du dessus, un faisceau de lumière passe.", "texte": "13–15 s : Le look : 27,70 € · 15–18 s : Shop now · yline.fr", "transition": "Fin.", "image": "Arrange exactly these three pieces from the reference images (necklace, hoop earrings, ring), unchanged, on black velvet, top-down flat lay, elegant spacing, narrow warm light, crisp highlights on the gold, photorealistic luxury jewelry campaign, vertical 9:16, empty space in the upper third for text.", "video": "Very slow top-down camera rotation, a soft beam of light passes over the jewelry, cinematic."}], "textes": ["Personne ne devinera le prix.", "Collier Giulia", "Boucles Ayana", "Acier inoxydable doré", "Hypoallergénique · Ne s'oxyde pas", "Le look : 27,70 €", "Shop now · yline.fr"], "cta": "Shop now · yline.fr"}, {"id": "viral", "numero": "2", "nom": "Très tendance viral", "titre": "Devine le prix", "duree": "15 s", "concept": "Le format « stack » calé sur un son tendance : à chaque temps, un nouveau bijou apparaît sur la muse. Coupes très rapides, main devant l'objectif, cheveux qui volent, puis la révélation du prix. La question de la première seconde fait rester jusqu'à la réponse et pousse à commenter son estimation.", "hook": "Devine combien coûte ce look 👀", "pieces": "Bague Angelica 9,90 € · Bague Bedra 8,90 € · Boucles Ayana 8,90 € · Collier Giulia 8,90 € · Bracelet Lunéa 11,90 € = 48,50 €", "visuel": [["Décor", "Appartement moderne et lumineux : murs beiges, arche, grande fenêtre."], ["Tenue", "Body noir et blazer crème ouvert, cheveux longs lissés détachés."], ["Lumière", "Lumière du jour douce, reflets vifs sur l'or."], ["Palette", "Crème, beige, noir, or."], ["Caméra", "Style smartphone haut de gamme : cadrages serrés, petits mouvements à la main, ralentis sur les reflets."], ["Transitions", "Main devant l'objectif, filé rapide, coupe à chaque temps, éclat doré à la révélation."], ["Son", "Son tendance de la Commercial Music Library, beat marqué 115 à 125 BPM, une coupe tous les 2 temps."]], "plans": [{"t": "0–1 s", "nom": "Hook", "source": "IA : muse + 2 bijoux", "refs": "muse.png + look/1-angelica.jpg + look/2-bedra.webp", "visuel": "La muse avance sa main baguée vers l'objectif jusqu'à couvrir l'écran.", "texte": "Devine combien coûte ce look 👀", "transition": "La main couvre l'objectif, on découvre le plan 2.", "image": "Same woman as reference image 1, long sleek dark hair down, black bodysuit and cream tailored blazer, standing in a bright modern minimalist apartment with beige walls and an arched doorway, raising her hand toward the camera to show the two stacked rings from reference images 2 and 3 on her fingers, playful confident look, natural daylight, 35mm, f/2.8, photorealistic social media fashion content, anatomically correct hand, vertical 9:16.", "video": "She quickly brings her hand toward the lens until it fills the frame, slight motion blur, handheld feel."}, {"t": "1–2,5 s", "nom": "Les bagues", "source": "IA : muse + 2 bijoux", "refs": "muse.png + look/1-angelica.jpg + look/2-bedra.webp", "visuel": "Très gros plan des deux bagues empilées, la main tourne dans la lumière.", "texte": "Bague Angelica + Bague Bedra", "transition": "Filé rapide.", "image": "Extreme close-up of the hand of the same woman as reference image 1, with exactly the two rings from reference images 2 and 3 stacked on her index and middle fingers, resting on the lapel of a cream blazer, soft daylight, crisp gold highlights, 100mm macro, photorealistic, anatomically correct fingers, vertical 9:16.", "video": "Her hand turns slowly so the rings catch the light, quick camera push-in, crisp focus on the rings."}, {"t": "2,5–4 s", "nom": "Les boucles", "source": "IA : muse + bijou", "refs": "muse.png + look/3-ayana.jpg", "visuel": "Elle glisse ses cheveux derrière l'oreille, la boucle se balance.", "texte": "Boucles Ayana", "transition": "Coupe sur le temps.", "image": "Same woman as reference image 1, close-up three-quarter view, tucking her hair behind her ear to reveal exactly the gold hoop earring from reference image 2, bright modern apartment, natural window light, 85mm, f/2, photorealistic, vertical 9:16.", "video": "She tucks her hair behind her ear in one smooth motion, the hoop swings and flashes in the light, slight slow motion at the end."}, {"t": "4–5,5 s", "nom": "Le collier", "source": "IA : muse + bijou", "refs": "muse.png + look/4-giulia.jpg", "visuel": "Gros plan sur l'encolure, elle soulève le pendentif du bout des doigts.", "texte": "Collier Giulia", "transition": "Filé rapide.", "image": "Same woman as reference image 1, close-up of her neckline, black bodysuit, open cream blazer, wearing exactly the necklace from reference image 2, bright daylight, 85mm, f/2, photorealistic, vertical 9:16.", "video": "Quick push toward the pendant then settle, she lifts the pendant gently with two fingers, cinematic."}, {"t": "5,5–7 s", "nom": "Le bracelet", "source": "IA : muse + bijou", "refs": "muse.png + look/5-lunea.jpg", "visuel": "Elle remonte la manche du blazer, le bracelet apparaît, le poignet tourne.", "texte": "Bracelet Lunéa", "transition": "Coupe sur le temps.", "image": "Close-up of the wrist of the same woman as reference image 1, wearing exactly the bracelet from reference image 2, her hand adjusting the cuff of a cream blazer, natural daylight, crisp gold highlights, 85mm, photorealistic, anatomically correct hand, vertical 9:16.", "video": "She pulls the blazer cuff back to reveal the bracelet, the wrist rotates and the clover links catch the light, quick and smooth."}, {"t": "7–10 s", "nom": "Le look complet", "source": "IA : muse + 2 ou 3 bijoux", "refs": "muse.png + look/3-ayana.jpg + look/4-giulia.jpg", "visuel": "Elle marche vers la caméra sous l'arche, rejette ses cheveux en arrière, ralenti.", "texte": "Total ?", "transition": "Arrêt sur image puis éclat doré.", "image": "Same woman as reference image 1 walking toward the camera through an arched doorway in a bright modern apartment, wearing exactly the hoop earrings from reference image 2 and the necklace from reference image 3, black bodysuit, open cream blazer, straight black trousers, confident stride, natural daylight, 35mm, f/2.8, photorealistic fashion film still, vertical 9:16.", "video": "She walks confidently toward the camera and flips her hair, the camera tracks backward, slow motion, the jewelry glints."}, {"t": "10–12 s", "nom": "La révélation", "source": "Ta vitrine existante", "refs": "tiktok/video/photos/07-look-complet.png", "visuel": "La vitrine des 5 pièces avec leurs prix, léger zoom arrière.", "texte": "48,50 € 🤯 le look complet", "transition": "Coupe sur le temps.", "image": "", "video": "Very slow zoom out, a soft glint passes over the jewelry."}, {"t": "12–15 s", "nom": "La CTA", "source": "IA : muse + bijou", "refs": "muse.png + look/3-ayana.jpg", "visuel": "Elle regarde par-dessus son épaule vers la caméra et sourit.", "texte": "Shop now · lien en bio", "transition": "Fin, le son continue.", "image": "Same woman as reference image 1, looking back over her shoulder at the camera with a playful smile, exactly the hoop earrings from reference image 2 visible, cream blazer, bright modern apartment, natural daylight, 85mm, f/2, photorealistic, vertical 9:16, empty space in the upper third.", "video": "She glances back over her shoulder at the camera and smiles, her hair moves softly, slow motion."}], "textes": ["Devine combien coûte ce look 👀", "Bague Angelica + Bague Bedra", "Boucles Ayana", "Collier Giulia", "Bracelet Lunéa", "Total ?", "48,50 € 🤯 le look complet", "Shop now · lien en bio"], "cta": "Shop now · lien en bio", "bonus": "Réponds en vidéo aux commentaires du type « 200 € ? » : chaque réponse est une nouvelle vidéo toute trouvée."}, {"id": "mode", "numero": "3", "nom": "Femme élégante mode luxe", "titre": "19 h, Paris", "duree": "20 s", "concept": "Un mini film de mode. Appartement haussmannien, lumière dorée de fin de journée : la muse termine de se préparer avant de sortir. Dernière boucle, bracelet, un regard au miroir, et elle part. Chaque bijou est le dernier détail d'une tenue noire très simple. C'est plus narratif et plus cinématographique, mais monté vite.", "hook": "Le dernier détail.", "pieces": "Boucles Ayana 8,90 € · Bracelet Lunéa 11,90 € · Collier Giulia 8,90 € = 29,70 €", "visuel": [["Décor", "Appartement haussmannien : moulures, parquet en point de Hongrie, hautes fenêtres, miroir doré ancien."], ["Tenue", "Robe nuisette en satin noir, chignon bas, rouge à lèvres rouge mat."], ["Lumière", "Soleil couchant rasant par les fenêtres, ombres longues, contre-jour doré."], ["Palette", "Noir, crème, bois chaud, or."], ["Caméra", "35 et 85 mm, travellings latéraux, ralentis, cadrages de cinéma."], ["Transitions", "Raccords de gestes, passage derrière un montant de fenêtre, fondu lumineux."], ["Son", "R&B lent ou piano jazz moderne, environ 90 BPM."]], "plans": [{"t": "0–1 s", "nom": "Hook", "source": "IA : muse + bijou", "refs": "muse.png + look/3-ayana.jpg", "visuel": "Très gros plan : ses doigts ferment la boucle Ayana à son oreille.", "texte": "Le dernier détail.", "transition": "Raccord sur la forme ronde de la boucle.", "image": "Extreme close-up of the same woman as reference image 1 fastening exactly the gold hoop earring from reference image 2 on her ear, sleek low bun, matte red lips just visible, warm golden sunset light grazing her skin, Parisian apartment softly blurred behind, 100mm, f/2.8, photorealistic luxury fashion film still, anatomically correct fingers, vertical 9:16.", "video": "Her fingers close the hoop earring, the gold flashes in the sunset light, very slow push-in, cinematic 24fps."}, {"t": "1–3 s", "nom": "La boucle en macro", "source": "Photo produit mise en scène", "refs": "look/3-ayana.jpg", "visuel": "Les boucles posées sur une coiffeuse en marbre, la lumière du soir glisse dessus.", "texte": "Boucles Ayana", "transition": "Coupe sur le temps.", "image": "Use the hoop earrings from the reference image exactly as they are. Place them on a cream marble vanity in a Parisian apartment at sunset, long warm shadows, crisp specular highlights on the polished gold, 100mm macro, shallow depth of field, photorealistic luxury jewelry campaign, vertical 9:16.", "video": "Warm sunset light slowly moves across the hoops, long shadows shift, subtle push-in, cinematic."}, {"t": "3–6 s", "nom": "Le bracelet au miroir", "source": "IA : muse + bijou", "refs": "muse.png + look/5-lunea.jpg", "visuel": "Devant un miroir doré ancien, elle ferme le bracelet. Son reflet bouge.", "texte": "Bracelet Lunéa", "transition": "Raccord de geste : sa main retombe, elle se met à marcher.", "image": "Same woman as reference image 1 in a black satin slip dress, standing in front of an antique gilded mirror in a Haussmann apartment with moldings and herringbone parquet, fastening exactly the bracelet from reference image 2 on her wrist, golden hour sunlight through tall windows, 50mm, f/2, photorealistic fashion film still, cinematic color grading, vertical 9:16.", "video": "She closes the bracelet clasp and lets her hand fall gracefully, her reflection moves in the mirror, slow lateral camera slide."}, {"t": "6–9 s", "nom": "La marche", "source": "IA : muse + 2 bijoux", "refs": "muse.png + look/3-ayana.jpg + look/4-giulia.jpg", "visuel": "De profil, elle passe devant les hautes fenêtres, bandes de lumière dorée sur son visage.", "texte": "Élégante. Tous les jours.", "transition": "Passage derrière un montant de fenêtre.", "image": "Same woman as reference image 1 walking past tall Parisian windows at sunset, side profile, black satin slip dress, wearing exactly the hoop earrings from reference image 2 and the necklace from reference image 3, alternating bands of golden light and shadow on her face, 85mm, f/2, photorealistic fashion film still, vertical 9:16.", "video": "She walks slowly from right to left past the windows, bands of golden light sweep across her face and jewelry, the camera tracks alongside her, slow motion."}, {"t": "9–12 s", "nom": "Le collier", "source": "IA : muse + bijou", "refs": "muse.png + look/4-giulia.jpg", "visuel": "Gros plan sur l'encolure : le bout de ses doigts descend le long de la chaîne jusqu'au pendentif.", "texte": "Collier Giulia", "transition": "Coupe sur le temps.", "image": "Close-up of the neckline of the same woman as reference image 1, black satin slip dress, wearing exactly the necklace from reference image 2, her fingertips touching the pendant, matte red lips at the top of the frame, golden sunset light, 85mm, f/2, photorealistic, anatomically correct fingers, vertical 9:16.", "video": "Her fingertips slide down the chain to the pendant, the stones sparkle, very slow push-in, cinematic."}, {"t": "12–15 s", "nom": "Le regard", "source": "IA : muse + 2 bijoux", "refs": "muse.png + look/3-ayana.jpg + look/4-giulia.jpg", "visuel": "À la porte, elle se retourne par-dessus l'épaule vers la caméra, léger sourire.", "texte": "Acier inoxydable doré · Hypoallergénique", "transition": "Fondu lumineux.", "image": "Same woman as reference image 1 at the apartment door, looking back over her shoulder at the camera, wearing exactly the hoop earrings from reference image 2 and the necklace from reference image 3, black satin slip dress, warm sunset backlight, 85mm, f/1.8, photorealistic luxury fashion campaign, vertical 9:16.", "video": "She pauses at the door and turns her head over her shoulder toward the camera with a faint smile, slow motion, warm backlight flares softly."}, {"t": "15–17 s", "nom": "Le prix", "source": "Photo produit mise en scène", "refs": "look/3-ayana.jpg + look/5-lunea.jpg + look/4-giulia.jpg", "visuel": "Les 3 pièces sur la coiffeuse en marbre, vue du dessus, lumière du soir.", "texte": "Le look : 29,70 €", "transition": "Coupe sur le temps.", "image": "Arrange exactly these three pieces from the reference images (hoop earrings, bracelet, necklace), unchanged, on a cream marble vanity next to a perfume bottle without any label, golden sunset light, long shadows, top-down view, photorealistic luxury jewelry campaign, vertical 9:16, empty space in the upper third.", "video": "Very slow overhead camera drift, warm light shifts across the gold, cinematic."}, {"t": "17–20 s", "nom": "La CTA", "source": "IA : muse", "refs": "muse.png", "visuel": "Vue de dos, elle sort par une haute porte double et disparaît dans la lumière.", "texte": "Shop now · yline.fr", "transition": "Fin.", "image": "Same woman as reference image 1 walking out through the tall double doors of a Haussmann apartment, seen from behind, black satin slip dress, sunset light, elegant silhouette, 35mm, photorealistic fashion film still, vertical 9:16, empty space in the upper third.", "video": "She walks away through the doors and disappears into the light, the camera stays still, slow motion, warm glow."}], "textes": ["Le dernier détail.", "Boucles Ayana", "Bracelet Lunéa", "Élégante. Tous les jours.", "Collier Giulia", "Acier inoxydable doré · Hypoallergénique", "Le look : 29,70 €", "Shop now · yline.fr"], "cta": "Shop now · yline.fr"}], "montage": ["Coupe sur les temps forts du son. Pour la variante 2, un plan tous les 2 temps.", "Une seule transition à effet par vidéo (zoom traversant, main devant l'objectif ou éclat doré). Le reste en coupes franches.", "Rampe de vitesse : accélère l'entrée du geste, ralentis sur l'éclat du bijou.", "Textes : serif fine pour les phrases, sans-serif en petites capitales pour les noms. Toujours dans le tiers supérieur, au moins 1,2 s à l'écran.", "Un scintillement sur un ou deux reflets maximum, sinon ça fait cheap.", "Export 1080×1920, 30 i/s. Publie depuis l'app avec un son de la Commercial Music Library si ton compte est pro."]}</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("data").textContent);
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function prompt(label, text) {
+    var f = el("figure", "prompt"), h = el("header"), b = el("button", "copy", "Copier"), pre = el("pre", null, text);
+    b.type = "button";
+    b.setAttribute("aria-label", "Copier : " + label);
+    b.addEventListener("click", function () {
+      function ok() { b.textContent = "Copié"; b.classList.add("done"); setTimeout(function () { b.textContent = "Copier"; b.classList.remove("done"); }, 1600); }
+      function fallback() { var r = document.createRange(); r.selectNodeContents(pre); var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Sélectionné"; }
+      try { navigator.clipboard.writeText(text).then(ok, fallback); } catch (e) { fallback(); }
+    });
+    h.appendChild(el("span", "lab", label)); h.appendChild(b); f.appendChild(h); f.appendChild(pre);
+    return f;
+  }
+  function fact(dl, k, v, cls) { var d = el("div"); d.appendChild(el("dt", null, k)); d.appendChild(el("dd", cls || null, v)); dl.appendChild(d); }
+
+  document.getElementById("intro").textContent = D.intro;
+  var picker = document.getElementById("picker");
+  D.variantes.forEach(function (v) {
+    var a = el("a", "pick"); a.href = "#" + v.id;
+    a.appendChild(el("span", "n", "Variante " + v.numero + " · " + v.nom + " · " + v.duree));
+    a.appendChild(el("span", "t", v.titre));
+    a.appendChild(el("span", "h", "« " + v.hook + " »"));
+    picker.appendChild(a);
+  });
+
+  var steps = document.getElementById("steps");
+  D.workflow.forEach(function (s) { var li = el("li"); li.appendChild(el("b", null, s[0])); li.appendChild(el("span", null, s[1])); steps.appendChild(li); });
+  var rules = document.getElementById("rules");
+  D.regles.forEach(function (r) { rules.appendChild(el("li", null, r)); });
+
+  document.getElementById("muse-desc").textContent = D.muse.description;
+  var mp = document.getElementById("muse-prompts");
+  mp.appendChild(prompt("Prompt muse", D.muse.prompt));
+  mp.appendChild(prompt("Prompt négatif (tous les plans)", D.muse.negatif));
+
+  var st = document.getElementById("style");
+  D.style.forEach(function (s) { var d = el("div"); d.appendChild(el("b", null, s[0])); d.appendChild(el("span", null, s[1])); st.appendChild(d); });
+  document.getElementById("keywords").appendChild(prompt("Mots-clés de rendu à ajouter", D.mots_cles));
+
+  var host = document.getElementById("variants");
+  D.variantes.forEach(function (v) {
+    var s = el("section", "variant"); s.id = v.id; s.setAttribute("aria-labelledby", "h-" + v.id);
+    var head = el("div", "vhead"); var h2 = el("h2", null, v.numero + ". " + v.titre); h2.id = "h-" + v.id;
+    head.appendChild(h2); head.appendChild(el("span", "meta", v.nom + " · " + v.duree + " · " + v.plans.length + " plans")); s.appendChild(head);
+    var hook = el("p", "vhook"); hook.appendChild(el("small", null, "Hook, 0–1 s")); hook.appendChild(document.createTextNode("« " + v.hook + " »")); s.appendChild(hook);
+    s.appendChild(el("p", "vconcept", v.concept));
+    s.appendChild(el("p", "vpieces", v.pieces));
+    s.appendChild(el("h3", null, "Plan visuel"));
+    var vis = el("div", "vis");
+    v.visuel.forEach(function (x) { var d = el("div"); d.appendChild(el("b", null, x[0])); d.appendChild(el("span", null, x[1])); vis.appendChild(d); });
+    s.appendChild(vis);
+    s.appendChild(el("h3", null, "Script et prompts"));
+    var ol = el("ol", "shots");
+    v.plans.forEach(function (p, i) {
+      var li = el("li", "shot"), side = el("div"), body = el("div");
+      side.appendChild(el("div", "time", p.t)); side.appendChild(el("div", "num", "Plan " + (i + 1)));
+      body.appendChild(el("h4", null, p.nom)); body.appendChild(el("span", "chip", p.source));
+      body.appendChild(el("p", "what", p.visuel));
+      var dl = el("dl", "facts");
+      fact(dl, "À l'écran", p.texte, "screen"); fact(dl, "Transition", p.transition); fact(dl, "Références", p.refs, "refs");
+      body.appendChild(dl);
+      var stack = el("div", "stack");
+      if (p.image) stack.appendChild(prompt("Prompt image", p.image));
+      stack.appendChild(prompt("Prompt vidéo", p.video));
+      body.appendChild(stack);
+      li.appendChild(side); li.appendChild(body); ol.appendChild(li);
+    });
+    s.appendChild(ol);
+    s.appendChild(el("h3", null, "Textes à l'écran"));
+    var tx = el("ol", "texts"); v.textes.forEach(function (t) { tx.appendChild(el("li", null, t)); }); s.appendChild(tx);
+    var cta = el("p", "cta"); cta.appendChild(document.createTextNode("CTA finale : ")); cta.appendChild(el("b", null, v.cta)); s.appendChild(cta);
+    if (v.bonus) s.appendChild(el("p", "bonus", "Bonus : " + v.bonus));
+    host.appendChild(s);
+  });
+
+  var ed = document.getElementById("edit");
+  D.montage.forEach(function (m) { ed.appendChild(el("li", null, m)); });
+})();
+</script>
